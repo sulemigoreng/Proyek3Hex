@@ -8,5 +8,5 @@ Anggota Kelompok :
   <li> Ilham Gibran A.M.</li>
   <li> Regawa Rama Prayoga</li>
   <li>Fadly Triansyah Rahman</li>
-  <li></li>
+  <li> Hamzah Prasetio Utomo</li>
 </ul>
