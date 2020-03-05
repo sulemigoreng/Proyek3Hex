@@ -7,6 +7,6 @@ Anggota Kelompok :
   <li> Muhammad Reyhan S </li>
   <li> Ilham Gibran A.M.</li>
   <li> Regawa Rama Prayoga</li>
-  <li></li>
+  <li>Fadly Triansyah Rahman</li>
   <li></li>
 </ul>
