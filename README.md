@@ -3,8 +3,10 @@ Proyek adalah proyek aplikasi courrier app untuk evermos
 
 Anggota Kelompok : 
 <ul>
-  <li> </li>
   <li> Farhan Rahmat A</li>
   <li> Muhammad Reyhan S </li>
   <li> Ilham Gibran A.M.</li>
+  <li> Regawa Rama Prayoga</li>
+  <li></li>
+  <li></li>
 </ul>
