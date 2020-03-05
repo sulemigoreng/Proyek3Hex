@@ -5,6 +5,7 @@
  */
 package packageclassification;
 
+import java.util.ArrayList;
 /**
  *
  * @author Fadly TR
@@ -55,6 +56,40 @@ public class StartPackageClassification {
     }
     
     private void isiDatabasePackages(){
+        Packages packages;
+        ArrayList<Product> products = null;
+        /*
+        public Packages(ArrayList<Product> contains, String resi, String customerName,
+            String customerPhone, String street, String zipCode, String district,
+            String city, double weight, double length, double width, double height)
+        */
+        products.set(0, database.getProduct(1)); products.set(1, database.getProduct(0));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(1)); products.set(1, database.getProduct(2));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(3)); products.set(1, database.getProduct(10));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(11)); products.remove(1);
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(19)); products.set(1, database.getProduct(12));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(4)); products.set(1, database.getProduct(5));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(9)); products.set(1, database.getProduct(2)); products.set(2, database.getProduct(5));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(10)); products.set(1, database.getProduct(13)); products.remove(2);
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(12)); products.set(1, database.getProduct(14));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(6)); products.set(1, database.getProduct(3));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(1)); products.set(1, database.getProduct(0)); 
+        products.set(2, database.getProduct(3)); products.set(3, database.getProduct(4));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(1)); products.set(1, database.getProduct(0)); products.remove(2); products.remove(3);
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
+        products.set(0, database.getProduct(1)); products.set(1, database.getProduct(0));
+        packages = new Packages(products, "resi", "customerName", "customerPhone", "street", "zipCode", "district", "city", 0, 0, 0, 0);
         
     }
 }
