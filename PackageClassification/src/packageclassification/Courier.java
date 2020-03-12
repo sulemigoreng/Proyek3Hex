@@ -14,11 +14,13 @@ public class Courier {
     private String idCourier;
     private String courierName;
     private String courierPhone;
+    private String available;
 
-    public Courier(String idCourier, String courierName, String courierPhone) {
+    public Courier(String idCourier, String courierName, String courierPhone, String available) {
         this.idCourier = idCourier;
         this.courierName = courierName;
         this.courierPhone = courierPhone;
+        this.available = available;
     }
 
     /**
@@ -61,6 +63,20 @@ public class Courier {
      */
     public void setCourierPhone(String courierPhone) {
         this.courierPhone = courierPhone;
+    }
+
+    /**
+     * @return the available
+     */
+    public String getAvailable() {
+        return available;
+    }
+
+    /**
+     * @param available the available to set
+     */
+    public void setAvailable(String available) {
+        this.available = available;
     }
 
 }

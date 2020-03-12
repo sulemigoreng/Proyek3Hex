@@ -16,7 +16,8 @@ public class DataTestCase {
     private Database database;
     
     public void testCaseProduct(){
-        Product product = new Product("B1", "Peci"); database.setProduct(product, 0);
+        Product product = null; 
+        product = new Product("B1", "Peci"); database.setProduct(product, 0);
         product = new Product("B2", "Kerudung"); database.setProduct(product, 1);
         product = new Product("B3", "Mukena"); database.setProduct(product, 2);
         product = new Product("B4", "Sarung"); database.setProduct(product, 3);
@@ -41,27 +42,30 @@ public class DataTestCase {
     public void testCaseCourier1256() {
         ArrayList<Courier> couriers = new ArrayList();
         database.setCourier(couriers);
-        Courier courier = new Courier("P1", "Fadly", "087878787871"); database.setCourier(courier, 0);
-        courier = new Courier("P2", "Farhan", "087878787872"); database.setCourier(courier, 1);
-        courier = new Courier("P3", "Hamzah", "087878787873"); database.setCourier(courier, 2);
-        courier = new Courier("P4", "Ilham", "087878787874"); database.setCourier(courier, 3);
-        courier = new Courier("P5", "Reyhan", "087878787875"); database.setCourier(courier, 4);
-        courier = new Courier("P6", "Regawa", "087878787876"); database.setCourier(courier, 5);
-        courier = new Courier("P7", "Ahmad", "087878787877"); database.setCourier(courier, 6);
-        courier = new Courier("P7", "Aji", "087878787877"); database.setCourier(courier, 7);
-        courier = new Courier("P9", "Naufal", "087878787879"); database.setCourier(courier, 8);
-        courier = new Courier("P10", "Ali", "087878787880"); database.setCourier(courier, 9);
+        Courier courier = null; 
+        courier = new Courier("P1", "Fadly", "087878787871", "1"); database.setCourier(courier, 0);
+        courier = new Courier("P2", "Farhan", "087878787872", "1"); database.setCourier(courier, 1);
+        courier = new Courier("P3", "Hamzah", "087878787873", "0"); database.setCourier(courier, 2);
+        courier = new Courier("P4", "Ilham", "087878787874", "1"); database.setCourier(courier, 3);
+        courier = new Courier("P5", "Reyhan", "087878787875", "1"); database.setCourier(courier, 4);
+        courier = new Courier("P6", "Regawa", "087878787876", "1"); database.setCourier(courier, 5);
+        courier = new Courier("P7", "Ahmad", "087878787877", "1"); database.setCourier(courier, 6);
+        courier = new Courier("P7", "Aji", "087878787877", "0"); database.setCourier(courier, 7);
+        courier = new Courier("P9", "Naufal", "087878787879", "1"); database.setCourier(courier, 8);
+        courier = new Courier("P10", "Ali", "087878787880", "1"); database.setCourier(courier, 9);
     }
     
     public void testCaseCourier3478(){
         ArrayList<Courier> couriers = new ArrayList();
         database.setCourier(couriers);
-        Courier courier = new Courier("P1", "Fadly", "087878787871"); database.setCourier(courier, 0);
-        courier = new Courier("P2", "Farhan", "087878787872"); database.setCourier(courier, 1);
+        Courier courier = null;
+        courier = new Courier("P1", "Fadly", "087878787871", "1"); database.setCourier(courier, 0);
+        courier = new Courier("P2", "Farhan", "087878787872", "0"); database.setCourier(courier, 1);
+        courier = new Courier("P3", "Hamzah", "087878787873", "1"); database.setCourier(courier, 2);
     }
     
     public void isiDatabasePackages(){
-        Packages packages;
+        Packages packages = null;
         ArrayList<Packages> pack = new ArrayList();
         ArrayList<Product> products = new ArrayList();
         /*
