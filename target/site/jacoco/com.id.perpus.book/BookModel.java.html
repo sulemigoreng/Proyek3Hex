@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.book</a> &gt; <span class="el_source">BookModel.java</span></div><h1>BookModel.java</h1><pre class="source lang-java linenums">package com.id.perpus.book;
+
+import java.util.Date;
+
+import com.id.perpus.common.BaseModel;
+
+<span class="nc" id="L7">public class BookModel extends BaseModel{</span>
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String bookCode;
+	private String title;
+	private String author;
+	private String publisher;
+	private String category;
+	private String categoryName;
+	private String location;
+	private String placePublication;
+	private String bookCover;
+	private String bookSummary;
+	private String subject1;
+	private String subject2;
+	
+	private Integer stock;
+	private Integer borrowed;
+	private Integer lost;
+	private Integer avaliable;
+	private Integer numberPage;
+	private String publishYear;
+	private Date publishYearDate;
+	
+	
+	public String getBookCode() {
+<span class="nc" id="L35">		return bookCode;</span>
+	}
+	public void setBookCode(String bookCode) {
+<span class="nc" id="L38">		this.bookCode = bookCode;</span>
+<span class="nc" id="L39">	}</span>
+	public String getTitle() {
+<span class="nc" id="L41">		return title;</span>
+	}
+	public void setTitle(String title) {
+<span class="nc" id="L44">		this.title = title;</span>
+<span class="nc" id="L45">	}</span>
+	public String getAuthor() {
+<span class="nc" id="L47">		return author;</span>
+	}
+	public void setAuthor(String author) {
+<span class="nc" id="L50">		this.author = author;</span>
+<span class="nc" id="L51">	}</span>
+	public String getPublisher() {
+<span class="nc" id="L53">		return publisher;</span>
+	}
+	public void setPublisher(String publisher) {
+<span class="nc" id="L56">		this.publisher = publisher;</span>
+<span class="nc" id="L57">	}</span>
+	public String getCategory() {
+<span class="nc" id="L59">		return category;</span>
+	}
+	public void setCategory(String category) {
+<span class="nc" id="L62">		this.category = category;</span>
+<span class="nc" id="L63">	}</span>
+	public String getCategoryName() {
+<span class="nc" id="L65">		return categoryName;</span>
+	}
+	public void setCategoryName(String categoryName) {
+<span class="nc" id="L68">		this.categoryName = categoryName;</span>
+<span class="nc" id="L69">	}</span>
+	public String getLocation() {
+<span class="nc" id="L71">		return location;</span>
+	}
+	public void setLocation(String location) {
+<span class="nc" id="L74">		this.location = location;</span>
+<span class="nc" id="L75">	}</span>
+	public String getPlacePublication() {
+<span class="nc" id="L77">		return placePublication;</span>
+	}
+	public void setPlacePublication(String placePublication) {
+<span class="nc" id="L80">		this.placePublication = placePublication;</span>
+<span class="nc" id="L81">	}</span>
+	public String getBookCover() {
+<span class="nc" id="L83">		return bookCover;</span>
+	}
+	public void setBookCover(String bookCover) {
+<span class="nc" id="L86">		this.bookCover = bookCover;</span>
+<span class="nc" id="L87">	}</span>
+	public String getBookSummary() {
+<span class="nc" id="L89">		return bookSummary;</span>
+	}
+	public void setBookSummary(String bookSummary) {
+<span class="nc" id="L92">		this.bookSummary = bookSummary;</span>
+<span class="nc" id="L93">	}</span>
+	public String getSubject1() {
+<span class="nc" id="L95">		return subject1;</span>
+	}
+	public void setSubject1(String subject1) {
+<span class="nc" id="L98">		this.subject1 = subject1;</span>
+<span class="nc" id="L99">	}</span>
+	public String getSubject2() {
+<span class="nc" id="L101">		return subject2;</span>
+	}
+	public void setSubject2(String subject2) {
+<span class="nc" id="L104">		this.subject2 = subject2;</span>
+<span class="nc" id="L105">	}</span>
+	
+	public Integer getStock() {
+<span class="nc" id="L108">		return stock;</span>
+	}
+	public void setStock(Integer stock) {
+<span class="nc" id="L111">		this.stock = stock;</span>
+<span class="nc" id="L112">	}</span>
+	public Integer getNumberPage() {
+<span class="nc" id="L114">		return numberPage;</span>
+	}
+	public void setNumberPage(Integer numberPage) {
+<span class="nc" id="L117">		this.numberPage = numberPage;</span>
+<span class="nc" id="L118">	}	</span>
+	public String getPublishYear() {
+<span class="nc" id="L120">		return publishYear;</span>
+	}
+	public void setPublishYear(String publishYear) {
+<span class="nc" id="L123">		this.publishYear = publishYear;</span>
+<span class="nc" id="L124">	}</span>
+	public Date getPublishYearDate() {
+<span class="nc" id="L126">		return publishYearDate;</span>
+	}
+	public void setPublishYearDate(Date publishYearDate) {
+<span class="nc" id="L129">		this.publishYearDate = publishYearDate;</span>
+<span class="nc" id="L130">	}</span>
+	public Integer getAvaliable() {
+<span class="nc" id="L132">		return avaliable;</span>
+	}
+	public void setAvaliable(Integer avaliable) {
+<span class="nc" id="L135">		this.avaliable = avaliable;</span>
+<span class="nc" id="L136">	}</span>
+	public Integer getBorrowed() {
+<span class="nc" id="L138">		return borrowed;</span>
+	}
+	public void setBorrowed(Integer borrowed) {
+<span class="nc" id="L141">		this.borrowed = borrowed;</span>
+<span class="nc" id="L142">	}</span>
+	public Integer getLost() {
+<span class="nc" id="L144">		return lost;</span>
+	}
+	public void setLost(Integer lost) {
+<span class="nc" id="L147">		this.lost = lost;</span>
+<span class="nc" id="L148">	}</span>
+	
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

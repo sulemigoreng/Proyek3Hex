@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JwtAuthenticationFilter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.common</a> &gt; <span class="el_source">JwtAuthenticationFilter.java</span></div><h1>JwtAuthenticationFilter.java</h1><pre class="source lang-java linenums">package com.id.perpus.common;
+
+import java.security.Key;
+import java.util.Date;
+
+import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.DatatypeConverter;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+<span class="nc" id="L15">public class JwtAuthenticationFilter {</span>
+
+<span class="nc" id="L17">   static String apiKey = Constanta.SALT;</span>
+	
+
+	public static TokenModel createJWT(String id, String issuer, String subject, long ttlMillis) {
+<span class="nc" id="L21">		TokenModel model = new TokenModel();</span>
+		try {
+<span class="nc" id="L23">			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;</span>
+<span class="nc" id="L24">			long nowMillis = System.currentTimeMillis();</span>
+<span class="nc" id="L25">			Date now = new Date(nowMillis);</span>
+
+<span class="nc" id="L27">			byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(apiKey);</span>
+<span class="nc" id="L28">			Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());</span>
+
+<span class="nc" id="L30">			JwtBuilder builder = Jwts.builder().setId(id).setIssuedAt(now).setSubject(subject).setIssuer(issuer)</span>
+<span class="nc" id="L31">					.signWith(signatureAlgorithm, signingKey);</span>
+
+<span class="nc bnc" id="L33" title="All 2 branches missed.">			if (ttlMillis &gt;= 0) {</span>
+<span class="nc" id="L34">				long expMillis = nowMillis + ttlMillis;</span>
+<span class="nc" id="L35">				Date exp = new Date(expMillis);</span>
+<span class="nc" id="L36">				builder.setExpiration(exp);</span>
+			}
+
+<span class="nc" id="L39">			model.setToken(builder.compact());</span>
+<span class="nc" id="L40">			model.setStatus(true);</span>
+<span class="nc" id="L41">			model.setIss(issuer);</span>
+<span class="nc" id="L42">		} catch (Exception e) {</span>
+<span class="nc" id="L43">			e.printStackTrace();</span>
+		}
+		
+<span class="nc" id="L46">		return model;</span>
+		
+	}
+
+	public static boolean verifyJWT(String jwt) throws Exception{
+<span class="nc" id="L51">		TokenModel model = new TokenModel();</span>
+<span class="nc" id="L52">		Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(apiKey)).parseClaimsJws(jwt).getBody();</span>
+
+<span class="nc" id="L54">		Date exp = claims.getExpiration();</span>
+<span class="nc" id="L55">		Date now = new Date();</span>
+		
+<span class="nc bnc" id="L57" title="All 2 branches missed.">		if(exp.getTime() &gt; now.getTime()){</span>
+<span class="nc" id="L58">			model.setToken(jwt);</span>
+<span class="nc" id="L59">			model.setIss(claims.getIssuer());</span>
+<span class="nc" id="L60">			model.setStatus(true);</span>
+<span class="nc" id="L61">		}else{</span>
+<span class="nc" id="L62">			model.setStatus(false);</span>
+		}
+
+<span class="nc" id="L65">		return model.isStatus();</span>
+	}
+	
+	public static boolean apiCheck(HttpServletRequest request){
+		try {
+<span class="nc" id="L70">			String token = (String) request.getSession().getAttribute(&quot;token&quot;);</span>
+<span class="nc" id="L71">			return verifyJWT(token);</span>
+<span class="nc" id="L72">		} catch (Exception e) {</span>
+<span class="nc" id="L73">			return false;</span>
+		}
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

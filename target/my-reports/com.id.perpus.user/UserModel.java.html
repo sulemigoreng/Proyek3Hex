@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.user</a> &gt; <span class="el_source">UserModel.java</span></div><h1>UserModel.java</h1><pre class="source lang-java linenums">package com.id.perpus.user;
+
+import com.id.perpus.common.BaseModel;
+
+<span class="nc" id="L5">public class UserModel extends BaseModel{</span>
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String nim;
+	private String name;
+	private String email;
+	private String programStudi;
+	private String jurusan;
+	private String status;
+	private String roleId;
+	private String roleName;
+	private String profilePicture;
+	private String description;
+	private String statusName;
+	private String majorsId;
+	private String prodiId;
+	
+	private String division;
+	private String nip;
+	
+	// login
+	private String idUser;
+	private String username;
+	private String password;
+	
+	
+	// filter search
+	private String searchText;
+	
+	public String getNim() {
+<span class="nc" id="L38">		return nim;</span>
+	}
+	public void setNim(String nim) {
+<span class="nc" id="L41">		this.nim = nim;</span>
+<span class="nc" id="L42">	}</span>
+	
+	public String getName() {
+<span class="nc" id="L45">		return name;</span>
+	}
+	public void setName(String name) {
+<span class="nc" id="L48">		this.name = name;</span>
+<span class="nc" id="L49">	}</span>
+	public String getEmail() {
+<span class="nc" id="L51">		return email;</span>
+	}
+	public void setEmail(String email) {
+<span class="nc" id="L54">		this.email = email;</span>
+<span class="nc" id="L55">	}</span>
+	public String getProgramStudi() {
+<span class="nc" id="L57">		return programStudi;</span>
+	}
+	public void setProgramStudi(String programStudi) {
+<span class="nc" id="L60">		this.programStudi = programStudi;</span>
+<span class="nc" id="L61">	}</span>
+	
+	public String getDivision() {
+<span class="nc" id="L64">		return division;</span>
+	}
+	public void setDivision(String division) {
+<span class="nc" id="L67">		this.division = division;</span>
+<span class="nc" id="L68">	}</span>
+	public String getNip() {
+<span class="nc" id="L70">		return nip;</span>
+	}
+	public void setNip(String nip) {
+<span class="nc" id="L73">		this.nip = nip;</span>
+<span class="nc" id="L74">	}</span>
+	public String getStatus() {
+<span class="nc" id="L76">		return status;</span>
+	}
+	public void setStatus(String status) {
+<span class="nc" id="L79">		this.status = status;</span>
+<span class="nc" id="L80">	}</span>
+	public String getUsername() {
+<span class="nc" id="L82">		return username;</span>
+	}
+	public void setUsername(String username) {
+<span class="nc" id="L85">		this.username = username;</span>
+<span class="nc" id="L86">	}</span>
+	public String getPassword() {
+<span class="nc" id="L88">		return password;</span>
+	}
+	public void setPassword(String password) {
+<span class="nc" id="L91">		this.password = password;</span>
+<span class="nc" id="L92">	}</span>
+	public String getRoleId() {
+<span class="nc" id="L94">		return roleId;</span>
+	}
+	public void setRoleId(String roleId) {
+<span class="nc" id="L97">		this.roleId = roleId;</span>
+<span class="nc" id="L98">	}</span>
+	public String getRoleName() {
+<span class="nc" id="L100">		return roleName;</span>
+	}
+	public void setRoleName(String roleName) {
+<span class="nc" id="L103">		this.roleName = roleName;</span>
+<span class="nc" id="L104">	}</span>
+	public String getIdUser() {
+<span class="nc" id="L106">		return idUser;</span>
+	}
+	public void setIdUser(String idUser) {
+<span class="nc" id="L109">		this.idUser = idUser;</span>
+<span class="nc" id="L110">	}</span>
+	public String getSearchText() {
+<span class="nc" id="L112">		return searchText;</span>
+	}
+	public void setSearchText(String searchText) {
+<span class="nc" id="L115">		this.searchText = searchText;</span>
+<span class="nc" id="L116">	}</span>
+	public String getJurusan() {
+<span class="nc" id="L118">		return jurusan;</span>
+	}
+	public void setJurusan(String jurusan) {
+<span class="nc" id="L121">		this.jurusan = jurusan;</span>
+<span class="nc" id="L122">	}</span>
+	public String getProfilePicture() {
+<span class="nc" id="L124">		return profilePicture;</span>
+	}
+	public void setProfilePicture(String profilePicture) {
+<span class="nc" id="L127">		this.profilePicture = profilePicture;</span>
+<span class="nc" id="L128">	}</span>
+	public String getDescription() {
+<span class="nc" id="L130">		return description;</span>
+	}
+	public void setDescription(String description) {
+<span class="nc" id="L133">		this.description = description;</span>
+<span class="nc" id="L134">	}</span>
+	public String getStatusName() {
+<span class="nc" id="L136">		return statusName;</span>
+	}
+	public void setStatusName(String statusName) {
+<span class="nc" id="L139">		this.statusName = statusName;</span>
+<span class="nc" id="L140">	}</span>
+	public String getMajorsId() {
+<span class="nc" id="L142">		return majorsId;</span>
+	}
+	public void setMajorsId(String majorsId) {
+<span class="nc" id="L145">		this.majorsId = majorsId;</span>
+<span class="nc" id="L146">	}</span>
+	public String getProdiId() {
+<span class="nc" id="L148">		return prodiId;</span>
+	}
+	public void setProdiId(String prodiId) {
+<span class="nc" id="L151">		this.prodiId = prodiId;</span>
+<span class="nc" id="L152">	}</span>
+	
+	
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

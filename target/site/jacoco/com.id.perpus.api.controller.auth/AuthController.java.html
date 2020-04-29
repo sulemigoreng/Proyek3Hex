@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.api.controller.auth</a> &gt; <span class="el_source">AuthController.java</span></div><h1>AuthController.java</h1><pre class="source lang-java linenums">package com.id.perpus.api.controller.auth;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.id.perpus.auth.AuthService;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.JwtAuthenticationFilter;
+import com.id.perpus.common.Response;
+import com.id.perpus.user.UserModel;
+import com.id.perpus.user.UserService;
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+@Controller
+<span class="fc" id="L34">public class AuthController {</span>
+	
+	@Autowired
+	private AuthService authService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping(value=&quot;/&quot;,method = RequestMethod.GET)
+	public String index() {
+<span class="fc" id="L44">		return &quot;app.katalog&quot;;</span>
+	}
+
+	@RequestMapping(value=&quot;/login&quot;,method = RequestMethod.GET)
+	public ModelAndView login() {
+<span class="nc" id="L49">		Response resp = new Response(false,&quot;&quot;,&quot;&quot;,null);</span>
+<span class="nc" id="L50">		return new ModelAndView(&quot;app.login&quot;,&quot;model&quot;,resp);</span>
+	}
+	
+	@RequestMapping(value=&quot;/forgotPassword&quot;,method = RequestMethod.GET)
+	public ModelAndView forgotPassword() {
+<span class="nc" id="L55">		Response resp = new Response(false,&quot;&quot;,&quot;&quot;,null);</span>
+<span class="nc" id="L56">		return new ModelAndView(&quot;app.forgotPassword&quot;,&quot;model&quot;,resp);</span>
+	}
+	
+	@RequestMapping(value=&quot;/registrasi&quot;,method = RequestMethod.GET)
+	public ModelAndView regitrasi() {
+<span class="nc" id="L61">		Response resp = new Response(false,&quot;&quot;,&quot;&quot;,null);</span>
+<span class="nc" id="L62">		return new ModelAndView(&quot;app.registrasi&quot;,&quot;model&quot;,resp);</span>
+	}
+	
+
+	@RequestMapping(value=&quot;/admin-dashboard&quot;,method = RequestMethod.GET)
+	public ModelAndView dashboard() {
+<span class="nc" id="L68">		Response resp = new Response(false,&quot;&quot;,&quot;&quot;,null);</span>
+<span class="nc" id="L69">		return new ModelAndView(&quot;app.home&quot;,&quot;model&quot;,resp);</span>
+	}
+	
+	
+	@RequestMapping(value=&quot;/login&quot;,method = RequestMethod.POST)
+	public ModelAndView login(HttpServletRequest request,HttpServletResponse response, @RequestParam(name = &quot;username&quot;) String username, @RequestParam(name = &quot;password&quot;) String password) {
+		try {
+<span class="nc" id="L76">			Response resp = authService.doLogin(username, password);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">			if(resp.isStatus()){</span>
+<span class="nc" id="L78">				String token = JwtAuthenticationFilter.createJWT(new SimpleDateFormat(&quot;yyyyMMddHHmmss&quot;).format(new Date()),username,username,Constanta.MAX_TOKEN_EXPIRED).getToken();</span>
+<span class="nc" id="L79">				HttpSession session = request.getSession();</span>
+<span class="nc" id="L80">				session.setAttribute(&quot;username&quot;, username);</span>
+<span class="nc" id="L81">				session.setAttribute(&quot;token&quot;, token);</span>
+<span class="nc" id="L82">				session.setMaxInactiveInterval(Constanta.MAX_TOKEN_EXPIRED);</span>
+				
+<span class="nc" id="L84">				Response userData = userService.doSearchByUsername(username);</span>
+<span class="nc bnc" id="L85" title="All 4 branches missed.">				if(userData.getData() != null &amp;&amp; userData.getData().size() &gt; 0){</span>
+<span class="nc" id="L86">					System.out.print(&quot;Berhasil&quot;);</span>
+<span class="nc" id="L87">					UserModel model = (UserModel)userData.getData().get(0);</span>
+<span class="nc" id="L88">					session.setAttribute(&quot;userModel&quot;,model);</span>
+<span class="nc" id="L89">					session.setAttribute(&quot;name&quot;, model.getName());</span>
+<span class="nc" id="L90">					session.setAttribute(&quot;role&quot;,model.getRoleId());</span>
+<span class="nc" id="L91">					session.setAttribute(&quot;roleName&quot;,model.getRoleName());		</span>
+				}
+				
+<span class="nc" id="L94">				Cookie tokenize = new Cookie(&quot;token&quot;, token);</span>
+<span class="nc" id="L95">				tokenize.setMaxAge(Constanta.MAX_TOKEN_EXPIRED);</span>
+<span class="nc" id="L96">				response.addCookie(tokenize);</span>
+<span class="nc" id="L97">				return new ModelAndView(&quot;redirect:/dash-board&quot;);</span>
+			}else{
+<span class="nc" id="L99">				return new ModelAndView(&quot;app.login&quot;,&quot;model&quot;,resp);</span>
+			}
+<span class="nc" id="L101">		} catch (Exception e) {</span>
+<span class="nc" id="L102">			e.printStackTrace();</span>
+<span class="nc" id="L103">			return new ModelAndView(&quot;app.login&quot;,&quot;model&quot;,null);</span>
+		}
+	}
+
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/auth/forgot&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String forgot(HttpServletRequest request,
+						 HttpServletResponse response, 
+						 @RequestParam(value = &quot;insertemail&quot;, required=true) String insertemail) {
+<span class="nc" id="L112">		Gson gson = new Gson();</span>
+<span class="nc" id="L113">		Response responses = authService.doForgot(insertemail);</span>
+<span class="nc" id="L114">		return gson.toJson(responses);</span>
+	}
+		
+	@RequestMapping(value=&quot;/logout&quot;, method = RequestMethod.GET)
+	public ModelAndView logout(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L120">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L121">		session.invalidate();</span>
+<span class="nc" id="L122">		return new ModelAndView(&quot;redirect:/login&quot;);</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

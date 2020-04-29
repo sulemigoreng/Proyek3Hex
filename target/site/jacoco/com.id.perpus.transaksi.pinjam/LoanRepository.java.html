@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoanRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.transaksi.pinjam</a> &gt; <span class="el_source">LoanRepository.java</span></div><h1>LoanRepository.java</h1><pre class="source lang-java linenums">package com.id.perpus.transaksi.pinjam;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+
+@Repository
+<span class="fc" id="L17">public class LoanRepository {</span>
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	public int doAdd(LoanModel pinjam) {
+<span class="nc" id="L23">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L24">		query.append(&quot; INSERT INTO tb_r_loan( &quot;)</span>
+<span class="nc" id="L25">			 .append(&quot; loan_no,&quot;)</span>
+<span class="nc" id="L26">		 	 .append(&quot; nim,&quot;)</span>
+<span class="nc" id="L27">			 .append(&quot; book_cd,&quot;)</span>
+<span class="nc" id="L28">			 .append(&quot; loan_date,&quot;)</span>
+<span class="nc" id="L29">			 .append(&quot; returned_date,&quot;)</span>
+<span class="nc" id="L30">			 .append(&quot; loan_status,&quot;)</span>
+<span class="nc" id="L31">			 .append(&quot; created_by, &quot;)</span>
+<span class="nc" id="L32">		     .append(&quot; created_dt, &quot;)</span>
+<span class="nc" id="L33">		     .append(&quot; updated_by, &quot;)</span>
+<span class="nc" id="L34">		     .append(&quot; updated_dt   &quot;)</span>
+<span class="nc" id="L35">		     .append(&quot; ) VALUES ( &quot;)</span>
+<span class="nc" id="L36">		     .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L37">		 	 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L38">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L39">			 .append(&quot; STR_TO_DATE(?,'%d/%m/%Y'),&quot;)</span>
+<span class="nc" id="L40">			 .append(&quot; STR_TO_DATE(?,'%d/%m/%Y'),&quot;)</span>
+<span class="nc" id="L41">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L42">		     .append(&quot; ?, &quot;)// 6</span>
+<span class="nc" id="L43">		     .append(&quot; ?, &quot;)// 7</span>
+<span class="nc" id="L44">		     .append(&quot; ?, &quot;)// 8</span>
+<span class="nc" id="L45">		     .append(&quot; ? ) &quot;);// 9</span>
+	
+<span class="nc" id="L47">		int row = jdbcTemplate.update(query.toString(),</span>
+<span class="nc" id="L48">				pinjam.getLoanNo(),</span>
+<span class="nc" id="L49">				pinjam.getNim(),</span>
+<span class="nc" id="L50">				pinjam.getBookCd(),</span>
+<span class="nc" id="L51">				pinjam.getLoanDate(),</span>
+<span class="nc" id="L52">				pinjam.getReturnedDate(),</span>
+<span class="nc" id="L53">				pinjam.getLoanStatus(),</span>
+<span class="nc" id="L54">				pinjam.getCreatedBy(),// 6</span>
+<span class="nc" id="L55">				pinjam.getCreatedDt(), // 7</span>
+<span class="nc" id="L56">				pinjam.getUpdatedBy(), // 8</span>
+<span class="nc" id="L57">				pinjam.getUpdatedDt());// 9</span>
+<span class="nc" id="L58">		return row;</span>
+	}
+
+	public int doUpdate(LoanModel pinjam) {
+<span class="nc" id="L62">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L63">		sb.append(&quot; UPDATE tb_r_loan set&quot;);</span>
+<span class="nc" id="L64">		sb.append(&quot; nim = ?,&quot;);</span>
+<span class="nc" id="L65">		sb.append(&quot; book_cd = ?,&quot;);</span>
+<span class="nc" id="L66">		sb.append(&quot; loan_date = STR_TO_DATE(?,'%d/%m/%Y'),&quot;);</span>
+<span class="nc" id="L67">		sb.append(&quot; returned_date = STR_TO_DATE(?,'%d/%m/%Y'),&quot;);</span>
+<span class="nc" id="L68">		sb.append(&quot; updated_by = ?,&quot;);</span>
+<span class="nc" id="L69">		sb.append(&quot; updated_dt = ?&quot;);</span>
+<span class="nc" id="L70">		sb.append(&quot; WHERE loan_no = ?&quot;);</span>
+<span class="nc" id="L71">		return jdbcTemplate.update(sb.toString(), </span>
+<span class="nc" id="L72">				pinjam.getNim(),</span>
+<span class="nc" id="L73">				pinjam.getBookCd(),</span>
+<span class="nc" id="L74">				pinjam.getLoanDate(),</span>
+<span class="nc" id="L75">				pinjam.getReturnedDate(),</span>
+<span class="nc" id="L76">				pinjam.getUpdatedBy(), </span>
+<span class="nc" id="L77">				pinjam.getUpdatedDt(), </span>
+<span class="nc" id="L78">				pinjam.getLoanNo());</span>
+	}
+
+	public int getlastIdByDate(String currentDate) {
+<span class="nc" id="L82">		StringBuffer query = new StringBuffer();</span>
+<span class="nc" id="L83">		query.append(&quot; select ifnull(substr(max(l.loan_no),9),'0') id &quot;);</span>
+<span class="nc" id="L84">		query.append(&quot; from tb_r_loan l &quot;);</span>
+<span class="nc" id="L85">		query.append(&quot; where substr(l.loan_no, 1, 8) = ? &quot;);</span>
+<span class="nc" id="L86">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(), currentDate);</span>
+<span class="nc" id="L87">		String id = &quot;0&quot;;</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L89">			id = Common.toString(row.get(&quot;id&quot;));</span>
+		}
+<span class="nc" id="L91">		return Common.stringToInteger(id);</span>
+	}
+
+	public List&lt;LoanModel&gt; doSearch(LoanModel dto) {
+<span class="nc" id="L95">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L96">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L97">			 .append(&quot; l.loan_no,  &quot;)</span>
+<span class="nc" id="L98">			 .append(&quot; l.nim,  &quot;)</span>
+<span class="nc" id="L99">			 .append(&quot; s.user_email,  &quot;)</span>
+<span class="nc" id="L100">			 .append(&quot; u.name AS member_name, &quot;)</span>
+<span class="nc" id="L101">			 .append(&quot; CONCAT(m.majors_name, ' ', p.prodi_name) AS majors, &quot;)</span>
+<span class="nc" id="L102">			 .append(&quot; l.book_cd,  &quot;)</span>
+<span class="nc" id="L103">			 .append(&quot; b.title AS book_title, &quot;)</span>
+<span class="nc" id="L104">			 .append(&quot; DATE_FORMAT(l.loan_date,'%d/%m/%Y') as loan_date,  &quot;)</span>
+<span class="nc" id="L105">			 .append(&quot; DATE_FORMAT(l.returned_date,'%d/%m/%Y') as returned_date,  &quot;)</span>
+<span class="nc" id="L106">			 .append(&quot; DATE_FORMAT(l.actual_returned_date,'%d/%m/%Y') as actual_returned_date,  &quot;)</span>
+<span class="nc" id="L107">			 .append(&quot; ifnull(l.penalty, 0) penalty,  &quot;)</span>
+<span class="nc" id="L108">			 .append(&quot; l.loan_status,  &quot;)</span>
+<span class="nc" id="L109">			 .append(&quot;   b.book_cd,&quot;)</span>
+<span class="nc" id="L110">			 .append(&quot;   b.title,&quot;)</span>
+<span class="nc" id="L111">			 .append(&quot;   b.author,&quot;)</span>
+<span class="nc" id="L112">			 .append(&quot;   b.publisher,&quot;)</span>
+<span class="nc" id="L113">			 .append(&quot;   DATE_FORMAT(b.publication_year, '%Y') as publication_year,&quot;)</span>
+<span class="nc" id="L114">		     .append(&quot; l.created_by,  &quot;)</span>
+<span class="nc" id="L115">			 .append(&quot; l.created_dt,  &quot;)</span>
+<span class="nc" id="L116">			 .append(&quot; l.updated_by,  &quot;)</span>
+<span class="nc" id="L117">			 .append(&quot; l.updated_dt  &quot;)</span>
+<span class="nc" id="L118">			 .append(&quot; FROM tb_r_loan l INNER JOIN tb_m_students s ON l.nim = s.nim &quot;)</span>
+<span class="nc" id="L119">			 .append(&quot;      INNER JOIN tb_m_user u ON u.user_email = s.user_email &quot;)</span>
+<span class="nc" id="L120">			 .append(&quot;      INNER JOIN tb_m_book b ON b.book_cd = l.book_cd &quot;)</span>
+<span class="nc" id="L121">			 .append(&quot;      left join tb_m_prodi p on s.prodi_id = p.prodi_id &quot;)</span>
+<span class="nc" id="L122">			 .append(&quot;      left join tb_m_majors m on p.majors_id = m.majors_id &quot;)</span>
+<span class="nc" id="L123">		     .append(&quot; WHERE 1=1 &quot;);</span>
+<span class="nc bnc" id="L124" title="All 4 branches missed.">		if(dto.getMemberName() != null &amp;&amp; !dto.getMemberName().isEmpty()){</span>
+<span class="nc" id="L125">			query.append(&quot; AND u.name LIKE '%&quot;+dto.getMemberName()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L127" title="All 4 branches missed.">		if(dto.getBookTitle() != null &amp;&amp; !dto.getBookTitle().isEmpty()){</span>
+<span class="nc" id="L128">			query.append(&quot; AND b.title LIKE '%&quot;+dto.getBookTitle()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L130" title="All 4 branches missed.">		if(dto.getBookAuthor() != null &amp;&amp; !dto.getBookAuthor().isEmpty()){</span>
+<span class="nc" id="L131">			query.append(&quot; AND b.author LIKE '%&quot;+dto.getBookAuthor()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L133" title="All 4 branches missed.">		if(dto.getMajors() != null &amp;&amp; !dto.getMajors().isEmpty()){</span>
+<span class="nc" id="L134">			query.append(&quot; AND ( p.prodi_name LIKE '%&quot;+dto.getMajors()+&quot;%'  &quot;);</span>
+<span class="nc" id="L135">			query.append(&quot;  OR m.majors_name LIKE '%&quot;+dto.getMajors()+&quot;%'  ) &quot;);</span>
+		}
+<span class="nc bnc" id="L137" title="All 4 branches missed.">		if(dto.getLoanDateFrom() != null &amp;&amp; !dto.getLoanDateFrom().isEmpty()){</span>
+<span class="nc" id="L138">			query.append(&quot; AND l.loan_date &gt;=  STR_TO_DATE('&quot;+dto.getLoanDateFrom()+&quot;','%d/%m/%Y') &quot;);</span>
+		}
+<span class="nc bnc" id="L140" title="All 4 branches missed.">		if(dto.getLoanDateTo() != null &amp;&amp; !dto.getLoanDateTo().isEmpty()){</span>
+<span class="nc" id="L141">			query.append(&quot; AND l.loan_date &lt;=  STR_TO_DATE('&quot;+dto.getLoanDateTo()+&quot;','%d/%m/%Y') &quot;);</span>
+		}
+<span class="nc bnc" id="L143" title="All 4 branches missed.">		if(dto.getLoanStatus() != null &amp;&amp; !dto.getLoanStatus().isEmpty()){</span>
+<span class="nc" id="L144">			query.append(&quot; AND l.loan_status = '&quot;+dto.getLoanStatus()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L146" title="All 4 branches missed.">		if(dto.getNim() != null &amp;&amp; !dto.getNim().isEmpty()){</span>
+<span class="nc" id="L147">			query.append(&quot; AND l.nim = '&quot;+dto.getNim()+&quot;'&quot;);</span>
+		}
+		
+<span class="nc" id="L150">		query.append(&quot; ORDER  BY l.loan_no ASC LIMIT ? OFFSET ?&quot;);</span>
+<span class="nc" id="L151">		List&lt;LoanModel&gt; loans = new ArrayList&lt;LoanModel&gt;();</span>
+
+<span class="nc" id="L153">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),dto.getLimit(), dto.getOffset());</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L155">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L156">			System.out.println(row);</span>
+<span class="nc" id="L157">			LoanModel loan = new LoanModel();</span>
+<span class="nc" id="L158">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L159">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L160">			loan.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L161">			loan.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L162">			loan.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L163">			loan.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L165">			loan.setLoanNo(Common.toString(row.get(&quot;loan_no&quot;)));</span>
+<span class="nc" id="L166">			loan.setEmail(Common.toString(row.get(&quot;user_email&quot;)));</span>
+<span class="nc" id="L167">			loan.setNim(Common.toString(row.get(&quot;nim&quot;)));</span>
+<span class="nc" id="L168">			loan.setMemberName(Common.toString(row.get(&quot;member_name&quot;)));</span>
+<span class="nc" id="L169">			loan.setMajors(Common.toString(row.get(&quot;majors&quot;)));</span>
+			
+<span class="nc" id="L171">			loan.setBookCd(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L172">			loan.setBookTitle(Common.toString(row.get(&quot;title&quot;)));</span>
+<span class="nc" id="L173">			loan.setBookAuthor(Common.toString(row.get(&quot;author&quot;)));</span>
+<span class="nc" id="L174">			loan.setBookPublisher(Common.toString(row.get(&quot;publisher&quot;)));</span>
+<span class="nc" id="L175">			loan.setBookPublicationYear(Common.toString(row.get(&quot;publication_year&quot;)));</span>
+			
+<span class="nc" id="L177">			loan.setLoanDate(Common.toString(row.get(&quot;loan_date&quot;)));</span>
+<span class="nc" id="L178">			loan.setReturnedDate(Common.toString(row.get(&quot;returned_date&quot;)));</span>
+<span class="nc" id="L179">			loan.setActualReturnedDate(Common.toString(row.get(&quot;actual_returned_date&quot;)));</span>
+<span class="nc" id="L180">			loan.setPenalty(((Integer)row.get(&quot;penalty&quot;)));</span>
+			
+<span class="nc" id="L182">			loans.add(loan);</span>
+		}
+		
+<span class="nc" id="L185">		return loans;</span>
+	}
+
+	public Long doCount(LoanModel dto) {
+<span class="nc" id="L189">		Long count = (long)0;</span>
+<span class="nc" id="L190">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L191">		query.append(&quot;SELECT COUNT(*) COUNT &quot;)</span>
+<span class="nc" id="L192">		.append(&quot; FROM tb_r_loan l INNER JOIN tb_m_students s ON l.nim = s.nim &quot;)</span>
+<span class="nc" id="L193">		 .append(&quot;      INNER JOIN tb_m_user u ON u.user_email = s.user_email &quot;)</span>
+<span class="nc" id="L194">		 .append(&quot;      INNER JOIN tb_m_book b ON b.book_cd = l.book_cd &quot;)</span>
+<span class="nc" id="L195">		 .append(&quot;      left join tb_m_prodi p on s.prodi_id = p.prodi_id &quot;)</span>
+<span class="nc" id="L196">		 .append(&quot;      left join tb_m_majors m on p.majors_id = m.majors_id &quot;)</span>
+<span class="nc" id="L197">	     .append(&quot; WHERE 1=1 &quot;);</span>
+		
+<span class="nc bnc" id="L199" title="All 4 branches missed.">		if(dto.getMemberName() != null &amp;&amp; !dto.getMemberName().isEmpty()){</span>
+<span class="nc" id="L200">			query.append(&quot; AND u.name LIKE '%&quot;+dto.getMemberName()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L202" title="All 4 branches missed.">		if(dto.getBookTitle() != null &amp;&amp; !dto.getBookTitle().isEmpty()){</span>
+<span class="nc" id="L203">			query.append(&quot; AND b.title LIKE '%&quot;+dto.getBookTitle()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L205" title="All 4 branches missed.">		if(dto.getBookAuthor() != null &amp;&amp; !dto.getBookAuthor().isEmpty()){</span>
+<span class="nc" id="L206">			query.append(&quot; AND b.author LIKE '%&quot;+dto.getBookAuthor()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L208" title="All 4 branches missed.">		if(dto.getMajors() != null &amp;&amp; !dto.getMajors().isEmpty()){</span>
+<span class="nc" id="L209">			query.append(&quot; AND ( p.prodi_name LIKE '%&quot;+dto.getMajors()+&quot;%'  &quot;);</span>
+<span class="nc" id="L210">			query.append(&quot;  OR m.majors_name LIKE '%&quot;+dto.getMajors()+&quot;%'  ) &quot;);</span>
+		}
+<span class="nc bnc" id="L212" title="All 4 branches missed.">		if(dto.getLoanDateFrom() != null &amp;&amp; !dto.getLoanDateFrom().isEmpty()){</span>
+<span class="nc" id="L213">			query.append(&quot; AND l.loan_date &gt;=  STR_TO_DATE('&quot;+dto.getLoanDateFrom()+&quot;','%d/%m/%Y') &quot;);</span>
+		}
+<span class="nc bnc" id="L215" title="All 4 branches missed.">		if(dto.getLoanDateTo() != null &amp;&amp; !dto.getLoanDateTo().isEmpty()){</span>
+<span class="nc" id="L216">			query.append(&quot; AND l.loan_date &lt;=  STR_TO_DATE('&quot;+dto.getLoanDateTo()+&quot;','%d/%m/%Y') &quot;);</span>
+		}
+<span class="nc bnc" id="L218" title="All 4 branches missed.">		if(dto.getLoanStatus() != null &amp;&amp; !dto.getLoanStatus().isEmpty()){</span>
+<span class="nc" id="L219">			query.append(&quot; AND l.loan_status = '&quot;+dto.getLoanStatus()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L221" title="All 4 branches missed.">		if(dto.getNim() != null &amp;&amp; !dto.getNim().isEmpty()){</span>
+<span class="nc" id="L222">			query.append(&quot; AND l.nim = '&quot;+dto.getNim()+&quot;'&quot;);</span>
+		}
+		
+<span class="nc" id="L225">	    List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString());</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L227">			count = ((Long)row.get(&quot;COUNT&quot;));	</span>
+		}
+<span class="nc" id="L229">		return count;</span>
+	}
+
+	public LoanModel getLoanDataById(String loanNo) {
+<span class="nc" id="L233">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L234">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L235">			 .append(&quot; l.loan_no,  &quot;)</span>
+<span class="nc" id="L236">			 .append(&quot; l.nim,  &quot;)</span>
+<span class="nc" id="L237">			 .append(&quot; s.user_email,  &quot;)</span>
+<span class="nc" id="L238">			 .append(&quot; u.name AS member_name, &quot;)</span>
+<span class="nc" id="L239">			 .append(&quot; CONCAT(m.majors_name, ' ', p.prodi_name) AS majors, &quot;)</span>
+<span class="nc" id="L240">			 .append(&quot; l.book_cd,  &quot;)</span>
+<span class="nc" id="L241">			 .append(&quot; b.title AS book_title, &quot;)</span>
+<span class="nc" id="L242">			 .append(&quot; DATE_FORMAT(l.loan_date,'%d/%m/%Y') as loan_date,  &quot;)</span>
+<span class="nc" id="L243">			 .append(&quot; DATE_FORMAT(l.returned_date,'%d/%m/%Y') as returned_date,  &quot;)</span>
+<span class="nc" id="L244">			 .append(&quot; DATE_FORMAT(l.actual_returned_date,'%d/%m/%Y') as actual_returned_date,  &quot;)</span>
+<span class="nc" id="L245">			 .append(&quot; ifnull(l.penalty, 0) penalty,  &quot;)</span>
+<span class="nc" id="L246">			 .append(&quot; l.loan_status,  &quot;)</span>
+<span class="nc" id="L247">		     .append(&quot; l.created_by,  &quot;)</span>
+<span class="nc" id="L248">			 .append(&quot; l.created_dt,  &quot;)</span>
+<span class="nc" id="L249">			 .append(&quot; l.updated_by,  &quot;)</span>
+<span class="nc" id="L250">			 .append(&quot; l.updated_dt  &quot;)</span>
+<span class="nc" id="L251">			 .append(&quot; FROM tb_r_loan l INNER JOIN tb_m_students s ON l.nim = s.nim &quot;)</span>
+<span class="nc" id="L252">			 .append(&quot;      INNER JOIN tb_m_user u ON u.user_email = s.user_email &quot;)</span>
+<span class="nc" id="L253">			 .append(&quot;      INNER JOIN tb_m_book b ON b.book_cd = l.book_cd &quot;)</span>
+<span class="nc" id="L254">			 .append(&quot;      left join tb_m_prodi p on s.prodi_id = p.prodi_id &quot;)</span>
+<span class="nc" id="L255">			 .append(&quot;      left join tb_m_majors m on p.majors_id = m.majors_id &quot;)</span>
+<span class="nc" id="L256">		     .append(&quot; WHERE l.loan_no = ? &quot;);</span>
+		
+<span class="nc" id="L258">		LoanModel loan = null;</span>
+
+<span class="nc" id="L260">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),loanNo);</span>
+<span class="nc bnc" id="L261" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L262">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L263">			System.out.println(row);</span>
+<span class="nc" id="L264">			loan = new LoanModel();</span>
+<span class="nc" id="L265">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L266">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L267">			loan.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L268">			loan.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L269">			loan.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L270">			loan.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L272">			loan.setLoanNo(Common.toString(row.get(&quot;loan_no&quot;)));</span>
+<span class="nc" id="L273">			loan.setNim(Common.toString(row.get(&quot;nim&quot;)));</span>
+<span class="nc" id="L274">			loan.setEmail(Common.toString(row.get(&quot;user_email&quot;)));</span>
+<span class="nc" id="L275">			loan.setMemberName(Common.toString(row.get(&quot;member_name&quot;)));</span>
+<span class="nc" id="L276">			loan.setMajors(Common.toString(row.get(&quot;majors&quot;)));</span>
+<span class="nc" id="L277">			loan.setBookCd(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L278">			loan.setBookTitle(Common.toString(row.get(&quot;book_title&quot;)));</span>
+<span class="nc" id="L279">			loan.setLoanDate(Common.toString(row.get(&quot;loan_date&quot;)));</span>
+<span class="nc" id="L280">			loan.setReturnedDate(Common.toString(row.get(&quot;returned_date&quot;)));</span>
+<span class="nc" id="L281">			loan.setActualReturnedDate(Common.toString(row.get(&quot;actual_returned_date&quot;)));</span>
+<span class="nc" id="L282">			loan.setPenalty(((Integer)row.get(&quot;penalty&quot;)));</span>
+			
+		}
+		
+<span class="nc" id="L286">		return loan;</span>
+	}
+
+	public int doDelete(LoanModel loan) {
+<span class="nc" id="L290">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L291">		sb.append(&quot; DELETE FROM tb_r_loan &quot;);</span>
+<span class="nc" id="L292">		sb.append(&quot; WHERE loan_no = ?&quot;);</span>
+<span class="nc" id="L293">		return jdbcTemplate.update(sb.toString(), loan.getLoanNo());</span>
+	}
+
+	public LoanModel getKembaliDataInfo(String loanNo) {
+<span class="nc" id="L297">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L298">		query.append(&quot; select &quot;);</span>
+<span class="nc" id="L299">		query.append(&quot; s.nim, &quot;);</span>
+<span class="nc" id="L300">		query.append(&quot;  (select u.name&quot;);</span>
+<span class="nc" id="L301">		query.append(&quot;   from tb_m_user u&quot;);</span>
+<span class="nc" id="L302">		query.append(&quot;    where u.user_email = s.user_email) AS member_name,&quot;);</span>
+<span class="nc" id="L303">		query.append(&quot;   (select m.majors_name&quot;);</span>
+<span class="nc" id="L304">		query.append(&quot;    from tb_m_prodi p, tb_m_majors m&quot;);</span>
+<span class="nc" id="L305">		query.append(&quot;    where p.majors_id = m.majors_id&quot;);</span>
+<span class="nc" id="L306">		query.append(&quot;           and p.prodi_id = s.prodi_id) AS major_name,&quot;);</span>
+<span class="nc" id="L307">		query.append(&quot;   (select p.prodi_name&quot;);</span>
+<span class="nc" id="L308">		query.append(&quot;     from tb_m_prodi p&quot;);</span>
+<span class="nc" id="L309">		query.append(&quot;     where p.prodi_id = s.prodi_id) AS prodi_name,&quot;);</span>
+<span class="nc" id="L310">		query.append(&quot;   b.book_cd,&quot;);</span>
+<span class="nc" id="L311">		query.append(&quot;   b.title,&quot;);</span>
+<span class="nc" id="L312">		query.append(&quot;   b.author,&quot;);</span>
+<span class="nc" id="L313">		query.append(&quot;   b.publisher,&quot;);</span>
+<span class="nc" id="L314">		query.append(&quot;   DATE_FORMAT(b.publication_year, '%Y') as publication_year,&quot;);</span>
+<span class="nc" id="L315">		query.append(&quot;   l.loan_no,&quot;);</span>
+<span class="nc" id="L316">		query.append(&quot;   DATE_FORMAT(l.loan_date, '%d/%c/%Y') AS loan_date,&quot;);</span>
+<span class="nc" id="L317">		query.append(&quot;   DATE_FORMAT(l.returned_date, '%d/%c/%Y') AS returned_date,&quot;);</span>
+<span class="nc" id="L318">		query.append(&quot;    DATE_FORMAT(CURDATE(), '%d/%c/%Y') AS actual_returned_date,&quot;);</span>
+<span class="nc" id="L319">		query.append(&quot;   if(DATEDIFF(CURDATE(), l.returned_date) &lt;= 0, 0, DATEDIFF(CURDATE(), l.returned_date) *  (select CONVERT(s.sys_val, UNSIGNED INTEGER) &quot;); </span>
+<span class="nc" id="L320">		query.append(&quot;               from tb_m_system s &quot;);</span>
+<span class="nc" id="L321">		query.append(&quot;              where s.sys_cat = 'BOOK_LOAN' &quot;);</span>
+<span class="nc" id="L322">		query.append(&quot;                AND s.sys_sub_cat = 'PENALTY_RETURNED' &quot;);</span>
+<span class="nc" id="L323">		query.append(&quot;                AND s.sys_cd = 'PR1')) AS penalty &quot;); </span>
+<span class="nc" id="L324">		query.append(&quot;   from tb_r_loan l inner join tb_m_students s on l.nim = s.nim &quot;);</span>
+<span class="nc" id="L325">		query.append(&quot;        inner join tb_m_book b on l.book_cd = b.book_cd &quot;);</span>
+<span class="nc" id="L326">		query.append(&quot;   where  l.loan_no = ?  &quot;);</span>
+		
+<span class="nc" id="L328">		LoanModel loan = null;</span>
+
+<span class="nc" id="L330">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),loanNo);</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L332">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L333">			System.out.println(row);</span>
+<span class="nc" id="L334">			loan = new LoanModel();</span>
+			
+<span class="nc" id="L336">			loan.setLoanNo(Common.toString(row.get(&quot;loan_no&quot;)));</span>
+<span class="nc" id="L337">			loan.setNim(Common.toString(row.get(&quot;nim&quot;)));</span>
+<span class="nc" id="L338">			loan.setMemberName(Common.toString(row.get(&quot;member_name&quot;)));</span>
+<span class="nc" id="L339">			loan.setMajorName(Common.toString(row.get(&quot;major_name&quot;)));</span>
+<span class="nc" id="L340">			loan.setProdiName(Common.toString(row.get(&quot;prodi_name&quot;)));</span>
+			
+<span class="nc" id="L342">			loan.setBookCd(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L343">			loan.setBookTitle(Common.toString(row.get(&quot;title&quot;)));</span>
+<span class="nc" id="L344">			loan.setBookAuthor(Common.toString(row.get(&quot;author&quot;)));</span>
+<span class="nc" id="L345">			loan.setBookPublisher(Common.toString(row.get(&quot;publisher&quot;)));</span>
+<span class="nc" id="L346">			loan.setBookPublicationYear(Common.toString(row.get(&quot;publication_year&quot;)));</span>
+			
+<span class="nc" id="L348">			loan.setLoanDate(Common.toString(row.get(&quot;loan_date&quot;)));</span>
+<span class="nc" id="L349">			loan.setReturnedDate(Common.toString(row.get(&quot;returned_date&quot;)));</span>
+<span class="nc" id="L350">			loan.setActualReturnedDate(Common.toString(row.get(&quot;actual_returned_date&quot;)));</span>
+<span class="nc" id="L351">			loan.setPenalty(((BigDecimal)row.get(&quot;penalty&quot;)).intValue());</span>
+			
+		}
+		
+<span class="nc" id="L355">		return loan;</span>
+	}
+
+	public int doUpdateKembali(LoanModel pinjam) {
+<span class="nc" id="L359">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L360">		sb.append(&quot; UPDATE tb_r_loan set&quot;);</span>
+<span class="nc" id="L361">		sb.append(&quot; penalty = ?,&quot;);</span>
+<span class="nc" id="L362">		sb.append(&quot; loan_status = ?,&quot;);</span>
+<span class="nc" id="L363">		sb.append(&quot; actual_returned_date = STR_TO_DATE(?,'%d/%m/%Y'),&quot;);</span>
+<span class="nc" id="L364">		sb.append(&quot; updated_by = ?,&quot;);</span>
+<span class="nc" id="L365">		sb.append(&quot; updated_dt = ?&quot;);</span>
+<span class="nc" id="L366">		sb.append(&quot; WHERE loan_no = ?&quot;);</span>
+<span class="nc" id="L367">		return jdbcTemplate.update(sb.toString(), </span>
+<span class="nc" id="L368">				pinjam.getPenalty(),</span>
+<span class="nc" id="L369">				pinjam.getLoanStatus(),</span>
+<span class="nc" id="L370">				pinjam.getActualReturnedDate(),</span>
+<span class="nc" id="L371">				pinjam.getUpdatedBy(), </span>
+<span class="nc" id="L372">				pinjam.getUpdatedDt(), </span>
+<span class="nc" id="L373">				pinjam.getLoanNo());</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

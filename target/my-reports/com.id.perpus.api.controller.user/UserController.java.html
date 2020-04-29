@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.api.controller.user</a> &gt; <span class="el_source">UserController.java</span></div><h1>UserController.java</h1><pre class="source lang-java linenums">package com.id.perpus.api.controller.user;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.Response;
+import com.id.perpus.user.UserModel;
+import com.id.perpus.user.UserService;
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+@Controller
+<span class="fc" id="L32">public class UserController {</span>
+
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping(value=&quot;/userVerification&quot;)
+	public String userVerification() {
+<span class="nc" id="L39">		return &quot;app.userVerification&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/user&quot;)
+	public String user() {
+<span class="nc" id="L44">		return &quot;app.user&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/userForm&quot;)
+	public ModelAndView userForm(@RequestParam(value = &quot;email&quot; , required=false) String email) {
+<span class="nc" id="L49">		System.out.println(email);</span>
+<span class="nc" id="L50">		UserModel userData = new UserModel();</span>
+<span class="nc" id="L51">		userData.setName(&quot;&quot;);</span>
+<span class="nc" id="L52">		userData.setEmail(&quot;&quot;);</span>
+<span class="nc" id="L53">		userData.setRoleId(&quot;&quot;);</span>
+<span class="nc" id="L54">		userData.setNim(&quot;&quot;);</span>
+<span class="nc" id="L55">		userData.setJurusan(&quot;&quot;);</span>
+<span class="nc" id="L56">		userData.setProgramStudi(&quot;&quot;);</span>
+<span class="nc" id="L57">		userData.setNip(&quot;&quot;);</span>
+<span class="nc" id="L58">		userData.setDivision(&quot;&quot;);</span>
+<span class="nc" id="L59">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (email != null){</span>
+<span class="nc" id="L61">			userData = userService.doGetModelUserById(email);</span>
+<span class="nc" id="L62">			data.put(&quot;mode&quot;, &quot;EDIT&quot;);</span>
+<span class="nc" id="L63">		}else{</span>
+<span class="nc" id="L64">			data.put(&quot;mode&quot;, &quot;ADD&quot;);</span>
+		}
+<span class="nc" id="L66">		data.put(&quot;userData&quot;, userData);</span>
+		
+<span class="nc" id="L68">		return new ModelAndView(&quot;app.userForm&quot;,data);</span>
+	}
+	
+	@RequestMapping(value=&quot;/profile&quot;)
+	public String profile() {
+<span class="nc" id="L73">		return &quot;app.profile&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/changeProfile&quot;)
+	public String changeProfile() {
+<span class="nc" id="L78">		return &quot;app.changeProfile&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/uploadProfilePicture&quot;)
+	public String uplodaProfilePicture() {
+<span class="nc" id="L83">		return &quot;app.uploadProfilePicture&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/changePassword&quot;)
+	public String changePassword() {
+<span class="nc" id="L88">		return &quot;app.changePassword&quot;;</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = &quot;/api/user&quot;)
+	public String index() {
+<span class="nc" id="L94">		return &quot;API User Service v0.1&quot;;</span>
+	}
+	
+	// api 
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/registrasi&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String daftarUser(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;name&quot; , required=false) String name,
+									  @RequestParam(value = &quot;nim&quot; , required=false) String nim,
+									  @RequestParam(value = &quot;email&quot; , required=false) String email,
+									  @RequestParam(value = &quot;prodi&quot; , required=false) String prodi,
+									  @RequestParam(value = &quot;jurusan&quot; , required=false) String jurusan) {
+<span class="nc" id="L106">		Gson gson = new Gson();</span>
+<span class="nc" id="L107">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L109">		user.setName(name);</span>
+<span class="nc" id="L110">		user.setNim(nim);</span>
+<span class="nc" id="L111">		user.setEmail(email);</span>
+<span class="nc" id="L112">		user.setProgramStudi(prodi);</span>
+<span class="nc" id="L113">		user.setJurusan(jurusan);</span>
+<span class="nc" id="L114">		user.setCreatedBy(name);</span>
+<span class="nc" id="L115">		user.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L116">		user.setUpdatedBy(name);</span>
+<span class="nc" id="L117">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L118">		Response resp = null;</span>
+		
+<span class="nc" id="L120">		resp = userService.doRegistrasi(user);</span>
+		
+<span class="nc" id="L122">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/save&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String saveUser(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;name&quot; , required=false) String name,
+									  @RequestParam(value = &quot;email&quot; , required=false) String email,
+									  @RequestParam(value = &quot;role&quot; , required=false) String role,
+									  @RequestParam(value = &quot;nim&quot; , required=false) String nim,
+									  @RequestParam(value = &quot;majors&quot; , required=false) String majors,
+									  @RequestParam(value = &quot;prodi&quot; , required=false) String prodi,
+									  @RequestParam(value = &quot;nip&quot; , required=false) String nip,
+									  @RequestParam(value = &quot;division&quot; , required=false) String division,
+									  @RequestParam(value = &quot;mode&quot; , required=false) String mode) {
+<span class="nc" id="L137">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L138">		String username = session.getAttribute(&quot;name&quot;).toString();</span>
+<span class="nc" id="L139">		Gson gson = new Gson();</span>
+<span class="nc" id="L140">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L142">		user.setName(name);</span>
+<span class="nc" id="L143">		user.setEmail(email);</span>
+<span class="nc" id="L144">		user.setRoleId(role);</span>
+<span class="nc" id="L145">		user.setNim(nim);</span>
+<span class="nc" id="L146">		user.setProgramStudi(prodi);</span>
+<span class="nc" id="L147">		user.setJurusan(majors);</span>
+<span class="nc" id="L148">		user.setNip(nip);</span>
+<span class="nc" id="L149">		user.setDivision(division);</span>
+		
+<span class="nc" id="L151">		user.setCreatedBy(username);</span>
+<span class="nc" id="L152">		user.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L153">		user.setUpdatedBy(username);</span>
+<span class="nc" id="L154">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L155">		Response resp = null;</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">		if (&quot;ADD&quot;.equals(mode)){</span>
+<span class="nc" id="L157">			resp = userService.doAdd(user);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">		}else if (&quot;EDIT&quot;.equals(mode)){</span>
+<span class="nc" id="L159">			resp = userService.doEdit(user);</span>
+		}
+		
+<span class="nc" id="L162">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/updateProfile&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String updateProfile(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;name&quot; , required=false) String name,
+									  @RequestParam(value = &quot;email&quot; , required=false) String email,
+									  @RequestParam(value = &quot;role&quot; , required=false) String role,
+									  @RequestParam(value = &quot;nim&quot; , required=false) String nim,
+									  @RequestParam(value = &quot;majors&quot; , required=false) String majors,
+									  @RequestParam(value = &quot;prodi&quot; , required=false) String prodi,
+									  @RequestParam(value = &quot;nip&quot; , required=false) String nip,
+									  @RequestParam(value = &quot;division&quot; , required=false) String division,
+									  @RequestParam(value = &quot;mode&quot; , required=false) String mode) {
+<span class="nc" id="L177">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L178">		String username = session.getAttribute(&quot;name&quot;).toString();</span>
+<span class="nc" id="L179">		Gson gson = new Gson();</span>
+<span class="nc" id="L180">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L182">		user.setName(name);</span>
+<span class="nc" id="L183">		user.setEmail(email);</span>
+<span class="nc" id="L184">		user.setRoleId(role);</span>
+<span class="nc" id="L185">		user.setNim(nim);</span>
+<span class="nc" id="L186">		user.setProgramStudi(prodi);</span>
+<span class="nc" id="L187">		user.setJurusan(majors);</span>
+<span class="nc" id="L188">		user.setNip(nip);</span>
+<span class="nc" id="L189">		user.setDivision(division);</span>
+		
+<span class="nc" id="L191">		user.setCreatedBy(username);</span>
+<span class="nc" id="L192">		user.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L193">		user.setUpdatedBy(username);</span>
+<span class="nc" id="L194">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L195">		Response resp = null;</span>
+		
+<span class="nc" id="L197">		resp = userService.doEdit(user);</span>
+		// reset session
+<span class="nc" id="L199">		Response userData = userService.doSearchByUsername(email);</span>
+<span class="nc bnc" id="L200" title="All 4 branches missed.">		if(userData.getData() != null &amp;&amp; userData.getData().size() &gt; 0){</span>
+<span class="nc" id="L201">			UserModel model = (UserModel)userData.getData().get(0);</span>
+<span class="nc" id="L202">			session.setAttribute(&quot;userModel&quot;,model);</span>
+		}
+<span class="nc" id="L204">		return gson.toJson(resp);</span>
+	}
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/delete&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String delete(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;email&quot; , required=false) String email) {
+<span class="nc" id="L210">		Gson gson = new Gson();</span>
+<span class="nc" id="L211">		UserModel user = new UserModel();</span>
+<span class="nc" id="L212">		user.setEmail(email);</span>
+	
+<span class="nc" id="L214">		Response resp = null;</span>
+<span class="nc" id="L215">		resp = userService.doDelete(user);</span>
+		
+		
+<span class="nc" id="L218">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/changeProfilePicture&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String updateProfilePicture(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;email&quot; ) String email,
+									  @RequestParam(value = &quot;profile_picture&quot;) String profilePicture) {
+<span class="nc" id="L226">		Gson gson = new Gson();</span>
+<span class="nc" id="L227">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L229">		user.setEmail(email);</span>
+<span class="nc" id="L230">		user.setProfilePicture(profilePicture);</span>
+<span class="nc" id="L231">		user.setUpdatedBy(email);</span>
+<span class="nc" id="L232">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L233">		Response resp = null;</span>
+		
+<span class="nc" id="L235">		resp = userService.doUpdateProfilePicture(user);</span>
+		// reset session
+<span class="nc" id="L237">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L238">		Response userData = userService.doSearchByUsername(email);</span>
+<span class="nc bnc" id="L239" title="All 4 branches missed.">		if(userData.getData() != null &amp;&amp; userData.getData().size() &gt; 0){</span>
+<span class="nc" id="L240">			UserModel model = (UserModel)userData.getData().get(0);</span>
+<span class="nc" id="L241">			session.setAttribute(&quot;userModel&quot;,model);</span>
+		}
+<span class="nc" id="L243">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/changepassword&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String updatePassword(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;email&quot; ) String email,
+									  @RequestParam(value = &quot;password&quot;) String password) {
+<span class="nc" id="L251">		Gson gson = new Gson();</span>
+<span class="nc" id="L252">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L254">		user.setEmail(email);</span>
+<span class="nc" id="L255">		user.setPassword(password);</span>
+<span class="nc" id="L256">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L257">		Response resp = null;</span>
+		
+<span class="nc" id="L259">		resp = userService.doUpdatePassword(user);</span>
+		
+<span class="nc" id="L261">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/updateStatus&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String updateStatus(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;email&quot; ) String email,
+									  @RequestParam(value = &quot;status&quot;) String status) {
+<span class="nc" id="L269">		Gson gson = new Gson();</span>
+<span class="nc" id="L270">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L272">		user.setEmail(email);</span>
+<span class="nc" id="L273">		user.setStatus(status);</span>
+<span class="nc" id="L274">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L275">		Response resp = null;</span>
+		
+<span class="nc" id="L277">		resp = userService.doUpdateStatus(user);</span>
+		
+<span class="nc" id="L279">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/search&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String search(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;rowPerPage&quot;) Integer rowPerPage,
+							  @RequestParam(value = &quot;page&quot;) Integer page,
+							  @RequestParam(value = &quot;name&quot;, required=false) String name,
+							  @RequestParam(value = &quot;nim_nip&quot;, required=false) String nim,
+							  @RequestParam(value = &quot;role&quot;, required=false) String role,
+							  @RequestParam(value = &quot;status&quot;, required=false) String status,
+							  @RequestParam(value = &quot;description&quot;, required=false) String description) {
+<span class="nc" id="L293">		Gson gson = new Gson();</span>
+<span class="nc" id="L294">		UserModel model = new UserModel();</span>
+		
+<span class="nc" id="L296">		model.setRowPerPage(rowPerPage);</span>
+<span class="nc" id="L297">		model.setLimit(rowPerPage);</span>
+<span class="nc" id="L298">		model.setPage(page);</span>
+<span class="nc" id="L299">		model.setName(name);</span>
+<span class="nc" id="L300">		model.setNim(nim);</span>
+<span class="nc" id="L301">		model.setRoleId(role);</span>
+<span class="nc" id="L302">		model.setStatus(status);</span>
+<span class="nc" id="L303">		model.setDescription(description);</span>
+		
+<span class="nc" id="L305">		Response responses = userService.doSearch(model);</span>
+<span class="nc" id="L306">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getUserByEmail&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String getUserByEmail(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;email&quot;, required=true) String email) {
+<span class="nc" id="L314">		Gson gson = new Gson();</span>
+<span class="nc" id="L315">		Response responses = userService.doGetUserById(email);</span>
+<span class="nc" id="L316">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/searchRegisteredUser&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String searchRegistered(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;rowPerPage&quot;) Integer rowPerPage,
+							  @RequestParam(value = &quot;page&quot;) Integer page,
+							  @RequestParam(value = &quot;name&quot;, required=false) String name,
+							  @RequestParam(value = &quot;nim&quot;, required=false) String nim,
+							  @RequestParam(value = &quot;description&quot;, required=false) String description) {
+<span class="nc" id="L328">		Gson gson = new Gson();</span>
+<span class="nc" id="L329">		UserModel model = new UserModel();</span>
+		
+<span class="nc" id="L331">		model.setRowPerPage(rowPerPage);</span>
+<span class="nc" id="L332">		model.setLimit(rowPerPage);</span>
+<span class="nc" id="L333">		model.setPage(page);</span>
+<span class="nc" id="L334">		model.setName(name);</span>
+<span class="nc" id="L335">		model.setNim(nim);</span>
+<span class="nc" id="L336">		model.setDescription(description);</span>
+<span class="nc" id="L337">		model.setStatus(&quot;ST2&quot;);</span>
+		
+<span class="nc" id="L339">		Response responses = userService.doSearch(model);</span>
+<span class="nc" id="L340">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getUserById&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String getUserById(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;idUser&quot;, required=true) String idUser) {
+<span class="nc" id="L348">		Gson gson = new Gson();</span>
+		
+<span class="nc" id="L350">		Response responses = userService.doGetUserById(idUser);</span>
+<span class="nc" id="L351">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/approve&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String approve(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;email&quot;, required=true) String email) {
+<span class="nc" id="L359">		Gson gson = new Gson();</span>
+<span class="nc" id="L360">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L362">		user.setEmail(email);</span>
+<span class="nc" id="L363">		user.setStatus(&quot;ST1&quot;);</span>
+<span class="nc" id="L364">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L365">		Response resp = null;</span>
+		
+<span class="nc" id="L367">		resp = userService.doApproveUser(user);</span>
+		
+<span class="nc" id="L369">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/reject&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String reject(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;email&quot;, required=true) String email) {
+<span class="nc" id="L377">		Gson gson = new Gson();</span>
+<span class="nc" id="L378">		UserModel user = new UserModel();</span>
+		
+<span class="nc" id="L380">		user.setEmail(email);</span>
+<span class="nc" id="L381">		user.setStatus(&quot;ST3&quot;);</span>
+<span class="nc" id="L382">		user.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L383">		Response resp = null;</span>
+		
+<span class="nc" id="L385">		resp = userService.doUpdateStatus(user);</span>
+		
+<span class="nc" id="L387">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getcombo&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String autocomplate(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L394">		Gson gson = new Gson();</span>
+<span class="nc" id="L395">		Response responses = userService.getCombo();</span>
+<span class="nc" id="L396">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getComboProdi&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboProdi(HttpServletRequest request,
+							  HttpServletResponse response,
+							  @RequestParam(value = &quot;majorsId&quot;, required=false) String majorsId) {
+<span class="nc" id="L404">		Gson gson = new Gson();</span>
+<span class="nc" id="L405">		Response responses = userService.getComboProdi(majorsId);</span>
+<span class="nc" id="L406">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getComboJurusan&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboJurusan(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L413">		Gson gson = new Gson();</span>
+<span class="nc" id="L414">		Response responses = userService.getComboJurusan();</span>
+<span class="nc" id="L415">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getComboRole&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboRole(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L422">		Gson gson = new Gson();</span>
+<span class="nc" id="L423">		Response responses = userService.getComboRole();</span>
+<span class="nc" id="L424">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getComboStatus&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboStatus(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L431">		Gson gson = new Gson();</span>
+<span class="nc" id="L432">		Response responses = userService.getComboStatus();</span>
+<span class="nc" id="L433">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/user/getComboDivision&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboDivision(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L440">		Gson gson = new Gson();</span>
+<span class="nc" id="L441">		Response responses = userService.getComboDivision();</span>
+<span class="nc" id="L442">		return gson.toJson(responses);</span>
+	}
+	//end api
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

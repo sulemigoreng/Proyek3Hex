@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookImplService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.book</a> &gt; <span class="el_source">BookImplService.java</span></div><h1>BookImplService.java</h1><pre class="source lang-java linenums">package com.id.perpus.book;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.id.perpus.common.ComboModel;
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.Messages;
+import com.id.perpus.common.Response;
+import com.id.perpus.system.SystemModel;
+import com.id.perpus.system.SystemRepository;
+
+@Service
+<span class="fc" id="L20">public class BookImplService implements BookService{</span>
+
+	@Autowired
+	BookRepository	repository;
+	
+	@Autowired
+	SystemRepository systemRepository;
+	
+	@Autowired
+	Messages messages;
+	
+<span class="fc" id="L31">	private final Logger logger = LoggerFactory.getLogger(BookImplService.class);</span>
+	
+	@Override
+	public Response doSearch(BookModel dto) {
+		try {
+<span class="nc" id="L36">			int offset = 0;</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">			if (dto.getPage() != null) {</span>
+<span class="nc" id="L38">				offset = (dto.getPage() - 1) * Constanta.LIMIT;</span>
+			}
+
+<span class="nc" id="L41">			dto.setOffset(offset);</span>
+
+<span class="nc" id="L43">			List&lt;BookModel&gt; list = repository.doSearch(dto);</span>
+<span class="nc" id="L44">			Long total_row = repository.doCount(dto);</span>
+
+<span class="nc" id="L46">			int totalPage = (int) Math.ceil(total_row / Constanta.LIMIT.doubleValue());</span>
+<span class="nc" id="L47">			Integer currentPage = ((offset / Constanta.LIMIT) + 1);</span>
+
+<span class="nc bnc" id="L49" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L50">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list,currentPage, totalPage, offset);</span>
+			} else {
+<span class="nc" id="L52">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null, 0, 0,1);</span>
+			}
+
+<span class="nc" id="L55">		} catch (Exception e) {</span>
+<span class="nc" id="L56">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L57">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null, 0, 0, 1);</span>
+		}
+	}
+	
+	public Response getComboBukuPinjam(String nim){
+		try {
+<span class="nc" id="L63">			List&lt;ComboModel&gt; list = repository.getComboBukuPinjam(nim);</span>
+<span class="nc bnc" id="L64" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L65">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L67">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L70">		} catch (Exception e) {</span>
+<span class="nc" id="L71">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L72">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+	
+	@Override
+	public Response getCombo() {
+		try {
+<span class="nc" id="L79">			List&lt;ComboModel&gt; list = repository.getCombo();</span>
+<span class="nc bnc" id="L80" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L81">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L83">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L86">		} catch (Exception e) {</span>
+<span class="nc" id="L87">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L88">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+	
+	public Response doPinjam(TransaksiModel dto) {
+		try {
+<span class="nc" id="L94">			int result = repository.doPinjam(dto);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L96">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L98">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L101">		} catch (Exception e) {</span>
+<span class="nc" id="L102">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L103" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L104">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L105">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L107">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L108">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+	
+	public Response doKembali(TransaksiModel dto) {
+		try {
+<span class="nc" id="L116">			int result = repository.doKembali(dto);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L118">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L120">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L123">		} catch (Exception e) {</span>
+<span class="nc" id="L124">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L125" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L126">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L127">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L129">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L130">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+	
+	public Response getDataPinjam(String nim) {
+		try {
+<span class="nc" id="L138">			List&lt;TransaksiModel&gt; list = repository.getDataPinjam(nim);</span>
+<span class="nc bnc" id="L139" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L140">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L142">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L145">		} catch (Exception e) {</span>
+<span class="nc" id="L146">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L147" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L148">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L149">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L151">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L152">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public List&lt;TransaksiModel&gt; getDenda(String idPinjam) {
+		try {
+<span class="nc" id="L161">			 List&lt;TransaksiModel&gt; result = repository.getDenda(idPinjam);</span>
+<span class="nc" id="L162">			return result;</span>
+
+<span class="nc" id="L164">		} catch (Exception e) {</span>
+<span class="nc" id="L165">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L166">			return null; </span>
+		}
+	}
+
+	@Override
+	public Response getComboCategory() {
+		try {
+<span class="nc" id="L173">			List&lt;SystemModel&gt; data = systemRepository.getDataSystem(&quot;CATALOG_BOOK&quot;, &quot;CATEGORY&quot;);</span>
+<span class="nc" id="L174">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L177">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L178">					temp.setLabel(data.get(i).getSysVal());</span>
+<span class="nc" id="L179">					temp.setValue(data.get(i).getSysCd());</span>
+<span class="nc" id="L180">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L184" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L185">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L187">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L190">		} catch (Exception e) {</span>
+<span class="nc" id="L191">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L192">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+
+	@Override
+	public BookModel getBookById(String bookCd) {
+		try {
+<span class="nc" id="L199">			return repository.getBookByCd(bookCd);</span>
+<span class="nc" id="L200">		} catch (Exception e) {</span>
+<span class="nc" id="L201">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L202">			return null;</span>
+		}
+	}
+
+	@Override
+	public Response doAdd(BookModel book) {
+		try {
+<span class="nc" id="L209">			int lastId = repository.getlastIdByCategory(book.getCategory());</span>
+<span class="nc" id="L210">			lastId++;</span>
+<span class="nc" id="L211">			book.setBookCode(book.getCategory()+ &quot;.&quot;+Common.integerToString03Format(lastId)); // new Book Id</span>
+<span class="nc" id="L212">			int result = repository.doAdd(book);</span>
+			
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L215">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L217">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L220">		} catch (Exception e) {</span>
+<span class="nc" id="L221">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L222" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L223">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, book.getBookCode()),</span>
+<span class="nc" id="L224">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L226">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L227">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public Response doEdit(BookModel book) {
+		try {
+<span class="nc" id="L236">			int result = repository.doUpdateBook(book);</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L238">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L240">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L243">		} catch (Exception e) {</span>
+<span class="nc" id="L244">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L245">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L246">						&quot;MSTD0000AERR&quot;, null);</span>
+		}
+	}
+
+	@Override
+	public Response doDelete(BookModel book) {
+		try {
+<span class="nc" id="L253">			int result = repository.doDeleteBook(book);</span>
+<span class="nc bnc" id="L254" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L255">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L257">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L260">		} catch (Exception e) {</span>
+<span class="nc" id="L261">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L262" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L263">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L264">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L266">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L267">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public BookMissingModel getBookMissingById(String bookCd, String date) {
+		try {
+<span class="nc" id="L276">			return repository.getBookMissingById(bookCd, date);</span>
+<span class="nc" id="L277">		} catch (Exception e) {</span>
+<span class="nc" id="L278">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L279">			return null;</span>
+		}
+	}
+
+	@Override
+	public Response doEditMissingBook(BookMissingModel book) {
+		try {
+<span class="nc" id="L286">			int result = repository.doUpdateMissingBook(book);</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L288">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L290">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L293">		} catch (Exception e) {</span>
+<span class="nc" id="L294">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L295">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L296">						&quot;MSTD0000AERR&quot;, null);</span>
+		}
+	}
+
+	@Override
+	public Response doAddMissingBook(BookMissingModel book) {
+		try {
+<span class="nc" id="L303">			int result = repository.doAddMissingBook(book);</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L305">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L307">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L310">		} catch (Exception e) {</span>
+<span class="nc" id="L311">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L312" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L313">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, book.getBookCd()),</span>
+<span class="nc" id="L314">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L316">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L317">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public Response doSearchMissingBook(BookMissingModel model) {
+		try {
+			
+<span class="nc" id="L327">			List&lt;BookMissingModel&gt; list = repository.doSearchMissingBook(model);</span>
+
+<span class="nc bnc" id="L329" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L330">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list,1, 1, 1);</span>
+			} else {
+<span class="nc" id="L332">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null, 0, 0,1);</span>
+			}
+
+<span class="nc" id="L335">		} catch (Exception e) {</span>
+<span class="nc" id="L336">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L337">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null, 0, 0, 1);</span>
+		}
+	}
+
+	@Override
+	public Response doDeleteMissingBook(BookMissingModel book) {
+		try {
+<span class="nc" id="L344">			int result = repository.doDeleteMissingBook(book);</span>
+<span class="nc bnc" id="L345" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L346">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L348">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L351">		} catch (Exception e) {</span>
+<span class="nc" id="L352">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L353">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L354">						&quot;MSTD0000AERR&quot;, null);</span>
+			
+
+		}
+	}
+
+	@Override
+	public Response getBookByCode(String bookCode) {
+		try {
+<span class="nc" id="L363">			BookModel data = repository.getBookByCd(bookCode);</span>
+<span class="nc" id="L364">			List&lt;BookModel&gt; list = new ArrayList&lt;BookModel&gt;();</span>
+<span class="nc bnc" id="L365" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc" id="L366">				list.add(data);</span>
+			}
+<span class="nc bnc" id="L368" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L369">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list,0, 0, 1);</span>
+			} else {
+<span class="nc" id="L371">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null, 0, 0,1);</span>
+			}
+
+<span class="nc" id="L374">		} catch (Exception e) {</span>
+<span class="nc" id="L375">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L376">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null, 0, 0, 1);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

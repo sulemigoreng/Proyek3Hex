@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PengembalianController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.api.controller.transaksi.pengembalian</a> &gt; <span class="el_source">PengembalianController.java</span></div><h1>PengembalianController.java</h1><pre class="source lang-java linenums">package com.id.perpus.api.controller.transaksi.pengembalian;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.Response;
+import com.id.perpus.transaksi.pinjam.LoanModel;
+import com.id.perpus.transaksi.pinjam.LoanService;
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+@Controller
+<span class="fc" id="L33">public class PengembalianController {</span>
+	@Autowired
+	private LoanService loanService;
+	
+	@RequestMapping(value=&quot;/kembali&quot;)
+	public String user() {
+<span class="nc" id="L39">		return &quot;app.kembali&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/kembaliForm&quot;)
+	public ModelAndView kembaliForm(@RequestParam(value = &quot;loanNo&quot; , required=true) String loanNo) {
+	
+<span class="nc" id="L45">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc" id="L46">		LoanModel loanData = loanService.getKembaliDataInfo(loanNo);</span>
+		
+<span class="nc" id="L48">		data.put(&quot;loanData&quot;, loanData);</span>
+		
+<span class="nc" id="L50">		return new ModelAndView(&quot;app.kembaliForm&quot;,data);</span>
+	}
+	
+	@RequestMapping(value=&quot;/kembaliInfo&quot;)
+	public ModelAndView kembaliInfo(@RequestParam(value = &quot;loanNo&quot; , required=false) String loanNo) {
+<span class="nc" id="L55">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc" id="L56">		LoanModel loanData = loanService.getKembaliDataInfo(loanNo);</span>
+		
+<span class="nc" id="L58">		data.put(&quot;loanData&quot;, loanData);</span>
+		
+<span class="nc" id="L60">		return new ModelAndView(&quot;app.kembaliInfo&quot;,data);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = &quot;/api/kembali&quot;)
+	public String index() {
+<span class="nc" id="L66">		return &quot;API Kembali Service v0.1&quot;;</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/kembali/save&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String daftarUser(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;loanNo&quot; , required=true) String loanNo,
+			  						  @RequestParam(value = &quot;actualReturnedDate&quot; , required=true) String actualReturnedDate,
+									  @RequestParam(value = &quot;penalty&quot; , required=true) String penalty
+										 ) {
+<span class="nc" id="L76">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L77">		String username = session.getAttribute(&quot;name&quot;).toString();</span>
+		
+<span class="nc" id="L79">		Gson gson = new Gson();</span>
+<span class="nc" id="L80">		LoanModel pinjam = new LoanModel();</span>
+<span class="nc" id="L81">		pinjam.setLoanNo(loanNo);</span>
+<span class="nc" id="L82">		pinjam.setActualReturnedDate(actualReturnedDate);</span>
+<span class="nc" id="L83">		pinjam.setPenalty(Common.stringToInteger(penalty));</span>
+<span class="nc" id="L84">		pinjam.setLoanStatus(&quot;BL2&quot;);</span>
+<span class="nc" id="L85">		pinjam.setCreatedBy(username);</span>
+<span class="nc" id="L86">		pinjam.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L87">		pinjam.setUpdatedBy(username);</span>
+<span class="nc" id="L88">		pinjam.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L89">		Response resp = loanService.doKembali(pinjam);</span>
+		
+<span class="nc" id="L91">		return gson.toJson(resp);</span>
+	}
+	
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

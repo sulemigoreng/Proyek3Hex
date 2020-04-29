@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.api.controller.book</a> &gt; <span class="el_source">BookController.java</span></div><h1>BookController.java</h1><pre class="source lang-java linenums">package com.id.perpus.api.controller.book;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+import com.id.perpus.book.BookMissingModel;
+import com.id.perpus.book.BookModel;
+import com.id.perpus.book.BookService;
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.Response;
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+@Controller
+<span class="fc" id="L34">public class BookController {</span>
+	@Autowired
+	private BookService bookService;
+	
+	@RequestMapping(value=&quot;/book&quot;)
+	public String book() {
+<span class="nc" id="L40">		return &quot;app.book&quot;;</span>
+	}
+	
+	@RequestMapping(value=&quot;/bookForm&quot;)
+	public ModelAndView bookForm(@RequestParam(value = &quot;bookCd&quot; , required=false) String bookCd) {
+<span class="nc" id="L45">		BookModel bookData = new BookModel();</span>
+<span class="nc" id="L46">		bookData.setAuthor(&quot;&quot;);</span>
+<span class="nc" id="L47">		bookData.setAvaliable(0);</span>
+<span class="nc" id="L48">		bookData.setBookCode(&quot;&quot;);</span>
+<span class="nc" id="L49">		bookData.setBookCover(&quot;&quot;);</span>
+<span class="nc" id="L50">		bookData.setBookSummary(&quot;&quot;);</span>
+<span class="nc" id="L51">		bookData.setCategory(&quot;&quot;);</span>
+<span class="nc" id="L52">		bookData.setNumberPage(0);</span>
+<span class="nc" id="L53">		bookData.setLocation(&quot;&quot;);</span>
+<span class="nc" id="L54">		bookData.setPlacePublication(&quot;&quot;);</span>
+<span class="nc" id="L55">		bookData.setStock(0);</span>
+<span class="nc" id="L56">		bookData.setSubject1(&quot;&quot;);</span>
+<span class="nc" id="L57">		bookData.setSubject2(&quot;&quot;);</span>
+<span class="nc" id="L58">		bookData.setTitle(&quot;&quot;);</span>
+		
+<span class="nc" id="L60">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">		if (bookCd != null){</span>
+<span class="nc" id="L62">			bookData = bookService.getBookById(bookCd);</span>
+<span class="nc" id="L63">			data.put(&quot;mode&quot;, &quot;EDIT&quot;);</span>
+<span class="nc" id="L64">		}else{</span>
+<span class="nc" id="L65">			data.put(&quot;mode&quot;, &quot;ADD&quot;);</span>
+		}
+<span class="nc" id="L67">		data.put(&quot;bookData&quot;, bookData);</span>
+		
+<span class="nc" id="L69">		return new ModelAndView(&quot;app.bookForm&quot;,data);</span>
+	}
+	
+	@RequestMapping(value=&quot;/bookDetail&quot;)
+	public ModelAndView bookDetail(@RequestParam(value = &quot;bookCd&quot; , required=true) String bookCd) {
+<span class="nc" id="L74">		BookModel userData = new BookModel();</span>
+<span class="nc" id="L75">		userData = bookService.getBookById(bookCd);</span>
+		
+<span class="nc" id="L77">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc" id="L78">		data.put(&quot;bookData&quot;, userData);</span>
+		
+<span class="nc" id="L80">		return new ModelAndView(&quot;app.bookDetail&quot;, data);</span>
+	}
+	
+	@RequestMapping(value=&quot;/bookFormMissing&quot;)
+	public ModelAndView bookFormMissing(@RequestParam(value = &quot;bookCd&quot; , required=true)String bookCd,
+										@RequestParam(value = &quot;date&quot; , required=false)String date) {
+<span class="nc" id="L86">		BookMissingModel bookData = new BookMissingModel();</span>
+<span class="nc" id="L87">		bookData.setBookCd(bookCd);</span>
+<span class="nc" id="L88">		bookData.setDate(&quot;&quot;);</span>
+<span class="nc" id="L89">		bookData.setReason(&quot;&quot;);</span>
+<span class="nc" id="L90">		bookData.setNumberOfBook(0);</span>
+		
+<span class="nc" id="L92">		Map&lt;String, Object&gt; data = new HashMap&lt;String,Object&gt;();</span>
+<span class="nc bnc" id="L93" title="All 4 branches missed.">		if (date != null &amp;&amp; !date.isEmpty()){</span>
+<span class="nc" id="L94">			bookData = bookService.getBookMissingById(bookCd, date);</span>
+<span class="nc" id="L95">			data.put(&quot;mode&quot;, &quot;EDIT&quot;);</span>
+<span class="nc" id="L96">		}else{</span>
+<span class="nc" id="L97">			data.put(&quot;mode&quot;, &quot;ADD&quot;);</span>
+		}
+<span class="nc" id="L99">		data.put(&quot;bookData&quot;, bookData);</span>
+		
+<span class="nc" id="L101">		return  new ModelAndView(&quot;app.bookFormMissing&quot;, data); </span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/book/getComboCategory&quot;, method = RequestMethod.GET, produces = &quot;application/json&quot;)
+	public String getComboStatus(HttpServletRequest request,
+							  HttpServletResponse response) {
+<span class="nc" id="L108">		Gson gson = new Gson();</span>
+<span class="nc" id="L109">		Response responses = bookService.getComboCategory();</span>
+<span class="nc" id="L110">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/book/search&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String search(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;rowPerPage&quot;) Integer rowPerPage,
+							  @RequestParam(value = &quot;page&quot;) Integer page,
+							  @RequestParam(value = &quot;title&quot;, required=false) String title,
+							  @RequestParam(value = &quot;subject&quot;, required=false) String subject,
+							  @RequestParam(value = &quot;author&quot;, required=false) String author,
+							  @RequestParam(value = &quot;publisher&quot;, required=false) String publisher,
+							  @RequestParam(value = &quot;publishYear&quot;, required=false) String publishYear,
+							  @RequestParam(value = &quot;category&quot;, required=false) String category) {
+<span class="nc" id="L125">		Gson gson = new Gson();</span>
+<span class="nc" id="L126">		BookModel model = new BookModel();</span>
+		
+<span class="nc" id="L128">		model.setRowPerPage(rowPerPage);</span>
+<span class="nc" id="L129">		model.setLimit(rowPerPage);</span>
+<span class="nc" id="L130">		model.setPage(page);</span>
+<span class="nc" id="L131">		model.setTitle(title);</span>
+<span class="nc" id="L132">		model.setAuthor(author);</span>
+<span class="nc" id="L133">		model.setPublisher(publisher);</span>
+<span class="nc" id="L134">		model.setPublishYear(publishYear);</span>
+<span class="nc" id="L135">		model.setCategory(category);</span>
+<span class="nc" id="L136">		model.setSubject1(subject);</span>
+		
+<span class="nc" id="L138">		Response responses = bookService.doSearch(model);</span>
+<span class="nc" id="L139">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/book/getBookByCode&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String getBookByCode(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;bookCode&quot;, required=true) String bookCode) {
+<span class="nc" id="L147">		Gson gson = new Gson();</span>
+<span class="nc" id="L148">		Response responses = bookService.getBookByCode(bookCode);</span>
+<span class="nc" id="L149">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/bookMissing/search&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String search(HttpServletRequest request,
+							  HttpServletResponse response, 
+							  @RequestParam(value = &quot;bookCd&quot;, required=true) String bookCd) {
+<span class="nc" id="L157">		Gson gson = new Gson();</span>
+<span class="nc" id="L158">		BookMissingModel model = new BookMissingModel();</span>
+<span class="nc" id="L159">		model.setBookCd(bookCd);</span>
+<span class="nc" id="L160">		Response responses = bookService.doSearchMissingBook(model);</span>
+<span class="nc" id="L161">		return gson.toJson(responses);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/book/save&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String saveBook(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;bookCd&quot; , required=false) String bookCd,
+									  @RequestParam(value = &quot;title&quot; , required=false) String title,
+									  @RequestParam(value = &quot;bookCover&quot; , required=false) String bookCover,
+									  @RequestParam(value = &quot;bookSummary&quot; , required=false) String bookSummary,
+									  @RequestParam(value = &quot;category&quot; , required=false) String category,
+									  @RequestParam(value = &quot;subject1&quot; , required=false) String subject1,
+									  @RequestParam(value = &quot;subject2&quot; , required=false) String subject2,
+									  @RequestParam(value = &quot;author&quot; , required=false) String author,
+									  @RequestParam(value = &quot;publisher&quot; , required=false) String publisher,
+									  @RequestParam(value = &quot;publicationYear&quot; , required=false) String publicationYear,
+									  @RequestParam(value = &quot;placePublication&quot; , required=false) String placePublication,
+									  @RequestParam(value = &quot;numberOfPage&quot; , required=false) String numberOfPage,
+									  @RequestParam(value = &quot;location&quot; , required=false) String location,
+									  @RequestParam(value = &quot;stock&quot; , required=false) String stock,
+									  @RequestParam(value = &quot;mode&quot; , required=false) String mode) {
+<span class="nc" id="L182">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L183">		String username = session.getAttribute(&quot;name&quot;).toString();</span>
+<span class="nc" id="L184">		Gson gson = new Gson();</span>
+<span class="nc" id="L185">		BookModel book = new BookModel();</span>
+		
+<span class="nc" id="L187">		book.setBookCode(bookCd);</span>
+<span class="nc" id="L188">		book.setTitle(title);</span>
+<span class="nc" id="L189">		book.setBookCover(bookCover);</span>
+<span class="nc" id="L190">		book.setBookSummary(bookSummary);</span>
+<span class="nc" id="L191">		book.setCategory(category);</span>
+<span class="nc" id="L192">		book.setSubject1(subject1);</span>
+<span class="nc" id="L193">		book.setSubject2(subject2);</span>
+<span class="nc" id="L194">		book.setAuthor(author);</span>
+<span class="nc" id="L195">		book.setPublisher(publisher);</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">		if (!&quot;&quot;.equals(publicationYear)){</span>
+<span class="nc" id="L197">			book.setPublishYear(publicationYear);</span>
+		}
+<span class="nc" id="L199">		book.setPlacePublication(placePublication);</span>
+<span class="nc" id="L200">		book.setNumberPage(Common.stringToInteger(numberOfPage));</span>
+<span class="nc" id="L201">		book.setLocation(location);</span>
+<span class="nc" id="L202">		book.setStock(Common.stringToInteger(stock));</span>
+		
+		
+<span class="nc" id="L205">		book.setCreatedBy(username);</span>
+<span class="nc" id="L206">		book.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L207">		book.setUpdatedBy(username);</span>
+<span class="nc" id="L208">		book.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L209">		Response resp = null;</span>
+<span class="nc bnc" id="L210" title="All 2 branches missed.">		if (&quot;ADD&quot;.equals(mode)){</span>
+<span class="nc" id="L211">			resp = bookService.doAdd(book);</span>
+<span class="nc bnc" id="L212" title="All 2 branches missed.">		}else if (&quot;EDIT&quot;.equals(mode)){</span>
+<span class="nc" id="L213">			resp = bookService.doEdit(book);</span>
+		}
+		
+<span class="nc" id="L216">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/bookMissing/save&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String saveBookMissing(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;bookCd&quot; , required=false) String bookCd,
+									  @RequestParam(value = &quot;date&quot; , required=false) String date,
+									  @RequestParam(value = &quot;reason&quot; , required=false) String reason,
+									  @RequestParam(value = &quot;numberOfBook&quot; , required=false) String numberOfBook,
+									  @RequestParam(value = &quot;mode&quot; , required=false) String mode) {
+<span class="nc" id="L227">		HttpSession session = request.getSession();</span>
+<span class="nc" id="L228">		String username = session.getAttribute(&quot;name&quot;).toString();</span>
+<span class="nc" id="L229">		Gson gson = new Gson();</span>
+<span class="nc" id="L230">		BookMissingModel book = new BookMissingModel();</span>
+		
+<span class="nc" id="L232">		book.setBookCd(bookCd);</span>
+<span class="nc" id="L233">		book.setDate(date);</span>
+<span class="nc" id="L234">		book.setReason(reason);</span>
+<span class="nc" id="L235">		book.setNumberOfBook(Common.stringToInteger(numberOfBook));</span>
+		
+<span class="nc" id="L237">		book.setCreatedBy(username);</span>
+<span class="nc" id="L238">		book.setCreatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L239">		book.setUpdatedBy(username);</span>
+<span class="nc" id="L240">		book.setUpdatedDt(Constanta.sdf.format(new Date()));</span>
+<span class="nc" id="L241">		Response resp = null;</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">		if (&quot;ADD&quot;.equals(mode)){</span>
+<span class="nc" id="L243">			resp = bookService.doAddMissingBook(book);</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">		}else if (&quot;EDIT&quot;.equals(mode)){</span>
+<span class="nc" id="L245">			resp = bookService.doEditMissingBook(book);</span>
+		}
+		
+<span class="nc" id="L248">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/book/delete&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String delete(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;bookCd&quot; , required=false) String bookCode) {
+<span class="nc" id="L255">		Gson gson = new Gson();</span>
+<span class="nc" id="L256">		BookModel book = new BookModel();</span>
+<span class="nc" id="L257">		book.setBookCode(bookCode);</span>
+	
+<span class="nc" id="L259">		Response resp = null;</span>
+<span class="nc" id="L260">		resp = bookService.doDelete(book);</span>
+		
+		
+<span class="nc" id="L263">		return gson.toJson(resp);</span>
+	}
+	
+	@ResponseBody
+	@RequestMapping(value=&quot;/api/missingBook/delete&quot;, method = RequestMethod.POST, consumes = &quot;application/x-www-form-urlencoded&quot;, produces = &quot;application/json&quot;)
+	public String delete(HttpServletRequest request, HttpServletResponse response, 
+									  @RequestParam(value = &quot;bookCd&quot; , required=true) String bookCd,
+									  @RequestParam(value = &quot;date&quot; , required=true) String date) {
+<span class="nc" id="L271">		Gson gson = new Gson();</span>
+<span class="nc" id="L272">		BookMissingModel book = new BookMissingModel();</span>
+<span class="nc" id="L273">		book.setBookCd(bookCd);</span>
+<span class="nc" id="L274">		book.setDate(date);</span>
+	
+<span class="nc" id="L276">		Response resp = null;</span>
+<span class="nc" id="L277">		resp = bookService.doDeleteMissingBook(book);</span>
+		
+		
+<span class="nc" id="L280">		return gson.toJson(resp);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

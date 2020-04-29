@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserImplService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.user</a> &gt; <span class="el_source">UserImplService.java</span></div><h1>UserImplService.java</h1><pre class="source lang-java linenums">package com.id.perpus.user;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import javax.sql.DataSource;
+
+import org.apache.tomcat.util.threads.ThreadPoolExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.id.perpus.common.ComboModel;
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+import com.id.perpus.common.Mail;
+import com.id.perpus.common.Messages;
+import com.id.perpus.common.Response;
+import com.id.perpus.majors.MajorsModel;
+import com.id.perpus.majors.MajorsRepository;
+import com.id.perpus.prodi.ProdiModel;
+import com.id.perpus.prodi.ProdiRepository;
+import com.id.perpus.role.RoleModel;
+import com.id.perpus.role.RoleRepository;
+import com.id.perpus.system.SystemModel;
+import com.id.perpus.system.SystemRepository;
+
+@Service
+<span class="fc" id="L33">public class UserImplService implements UserService {</span>
+
+	@Autowired
+	Messages messages;
+	
+	@Autowired
+	Mail mailer;
+
+	@Autowired
+	DataSource dataSource;
+
+	@Autowired
+	private UserRepository repository;
+	
+	@Autowired
+	private SystemRepository systemRepository;
+	
+	@Autowired
+	private ProdiRepository prodiRepository;
+	
+	@Autowired
+	private MajorsRepository majorsRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+
+<span class="fc" id="L59">	private final Logger logger = LoggerFactory.getLogger(UserImplService.class);</span>
+
+	@Override
+	public Response doRegistrasi(UserModel dto) {
+		try {
+<span class="nc" id="L64">			String password = Common.MD5(Constanta.PASSWORD_DEFAULT);</span>
+<span class="nc" id="L65">			dto.setPassword(password);</span>
+<span class="nc" id="L66">			dto.setRoleId(&quot;MBR&quot;);</span>
+<span class="nc" id="L67">			dto.setUsername(dto.getEmail());</span>
+<span class="nc" id="L68">			dto.setStatus(&quot;ST2&quot;); </span>
+<span class="nc" id="L69">			int result = repository.doRegitrasi(dto);</span>
+<span class="nc" id="L70">			result = result + repository.doSaveDataStudent(dto);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L72">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L74">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L77">		} catch (Exception e) {</span>
+<span class="nc" id="L78">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L79" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L80">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, dto.getEmail()),</span>
+<span class="nc" id="L81">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L83">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L84">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+	
+	@Override
+	public Response doSearchByUsername(String username) {
+		try {
+<span class="nc" id="L93">			List&lt;UserModel&gt; list = repository.doSearchByUsername(username);</span>
+<span class="nc bnc" id="L94" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L95">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L97">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L100">		} catch (Exception e) {</span>
+<span class="nc" id="L101">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L102">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,</span>
+<span class="nc" id="L103">					null);</span>
+		}
+	}
+	
+	@Override
+	public RoleModel doGetRoleById(String roleId) {
+		try {
+<span class="nc" id="L110">			return roleRepository.doGetRoleById(roleId);</span>
+<span class="nc" id="L111">		} catch (Exception e) {</span>
+<span class="nc" id="L112">			RoleModel g = new RoleModel();</span>
+<span class="nc" id="L113">			g.setRoleId(&quot;NON&quot;);</span>
+<span class="nc" id="L114">			g.setRoleName(&quot;Tidak Memiliki Grup&quot;);</span>
+<span class="nc" id="L115">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L116">			return g;</span>
+		}
+	}
+	
+	@Override
+	public Response doSearch(UserModel dto) {
+		try {
+<span class="nc" id="L123">			int offset = 0;</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">			if (dto.getPage() != null) {</span>
+<span class="nc" id="L125">				offset = (dto.getPage() - 1) * dto.getRowPerPage();</span>
+			}
+
+<span class="nc" id="L128">			dto.setOffset(offset);</span>
+
+<span class="nc" id="L130">			List&lt;UserModel&gt; list = repository.doSearch(dto);</span>
+<span class="nc" id="L131">			Long total_row = repository.doCount(dto);</span>
+
+<span class="nc" id="L133">			int totalPage = (int) Math.ceil(total_row / dto.getRowPerPage().doubleValue());</span>
+<span class="nc" id="L134">			Integer currentPage = ((offset / dto.getRowPerPage()) + 1);</span>
+
+<span class="nc bnc" id="L136" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L137">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list,currentPage, totalPage, offset);</span>
+			} else {
+<span class="nc" id="L139">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null, 0, 0,1);</span>
+			}
+
+<span class="nc" id="L142">		} catch (Exception e) {</span>
+<span class="nc" id="L143">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L144">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null, 0, 0, 1);</span>
+		}
+	}
+	
+	@Override
+	public Response doGetUserById(String userId) {
+		try {
+<span class="nc" id="L151">			List&lt;UserModel&gt; list = new ArrayList&lt;UserModel&gt;();</span>
+<span class="nc" id="L152">			UserModel data =repository.doSearchById(userId);</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc" id="L154">				list.add(data);</span>
+			}
+			
+<span class="nc bnc" id="L157" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L158">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list,0,0,1);</span>
+			} else {
+<span class="nc" id="L160">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null, 0, 0,1);</span>
+			}
+
+<span class="nc" id="L163">		} catch (Exception e) {</span>
+<span class="nc" id="L164">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L165">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null, 0, 0, 1);</span>
+		}
+	}
+	
+	public UserModel doGetModelUserById(String userId) {
+		try {
+<span class="nc" id="L171">			UserModel data =repository.doSearchById(userId);</span>
+<span class="nc" id="L172">			return data;</span>
+<span class="nc" id="L173">		} catch (Exception e) {</span>
+<span class="nc" id="L174">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L175">			return null;</span>
+		}
+	}
+
+	@Override
+	public Response doApproveUser(UserModel data) {
+		try {
+<span class="nc" id="L182">			int result = repository.doUpdateStatus(data);</span>
+<span class="nc" id="L183">			UserModel dataUser = repository.doSearchById(data.getEmail());</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L185">				ThreadPoolExecutor executor = new ThreadPoolExecutor(50, 50, 30, TimeUnit.SECONDS, new LinkedBlockingQueue&lt;Runnable&gt;());</span>
+<span class="nc" id="L186">		        executor.execute(new Runnable() {</span>
+		            @Override
+		            public void run() {
+		                try {
+<span class="nc" id="L190">		                	StringBuilder body = new StringBuilder();</span>
+<span class="nc" id="L191">		                	body.append(&quot;&lt;b&gt;Hello &quot; + dataUser.getName() + &quot;&lt;/b&gt;&lt;br&gt;&quot;)</span>
+<span class="nc" id="L192">		                	    .append(&quot;&lt;br&gt;&quot;)</span>
+<span class="nc" id="L193">		                	    .append(&quot;Your registration account has been approved, please go to the link below  &lt;br&gt;&quot;)</span>
+<span class="nc" id="L194">		                	    .append(&quot;to use the POLBAN Library web &lt;br&gt;&quot;)</span>
+<span class="nc" id="L195">		                	    .append(&quot;&lt;br&gt;&quot;)</span>
+<span class="nc" id="L196">		                	    .append(&quot;link web application : http://localhost:8080/PerpustakaanWebApp&quot;)</span>
+<span class="nc" id="L197">		                	    .append(&quot;&lt;br&gt;&quot;)</span>
+<span class="nc" id="L198">		                	    .append(&quot;&lt;hr&gt;&quot;)</span>
+<span class="nc" id="L199">		                	    .append(&quot;&lt;br&gt;&quot;)</span>
+<span class="nc" id="L200">		                	    .append(&quot;Copyright © 2020 POLBAN Library, All rights reserved.&lt;br&gt;&quot;)</span>
+<span class="nc" id="L201">		                	    .append(&quot;Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559&lt;br&gt;&quot;);</span>
+		                	    
+<span class="nc" id="L203">		                	mailer.send(data.getEmail(), Constanta.EMAIL_SUBJECT,body.toString());</span>
+<span class="nc" id="L204">		                } catch (IOException e) {</span>
+<span class="nc" id="L205">		                    logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L206">		                } catch (Exception e) {</span>
+<span class="nc" id="L207">		                	logger.error(e.getMessage(), e);</span>
+						}
+<span class="nc" id="L209">		            }</span>
+		        });
+<span class="nc" id="L211">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L213">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L216">		} catch (Exception e) {</span>
+<span class="nc" id="L217">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L218" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L219">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L220">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L222">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L223">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+	
+	@Override
+	public Response getCombo() {
+		try {
+<span class="nc" id="L232">			List&lt;ComboModel&gt; list = repository.getCombo();</span>
+<span class="nc bnc" id="L233" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L234">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L236">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L239">		} catch (Exception e) {</span>
+<span class="nc" id="L240">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L241">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+	// send mail
+	//this.mail.send(dto.getEmail(), Constanta.EMAIL_SUBJECT, &quot;Your username is &quot;+dto.getUsername()+&quot; \n and password is &quot;+newPassword);
+
+	@Override
+	public Response getComboProdi(String majorsId) {
+		try {
+<span class="nc" id="L250">			List&lt;ProdiModel&gt; data = prodiRepository.getProdiByMajorsId(majorsId);</span>
+<span class="nc" id="L251">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L252" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L253" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L254">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L255">					temp.setLabel(data.get(i).getProdiName());</span>
+<span class="nc" id="L256">					temp.setValue(data.get(i).getProdiId());</span>
+<span class="nc" id="L257">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L261" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L262">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L264">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L267">		} catch (Exception e) {</span>
+<span class="nc" id="L268">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L269">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+
+	@Override
+	public Response getComboJurusan() {
+		try {
+<span class="nc" id="L276">			List&lt;MajorsModel&gt; data = majorsRepository.getAllMajors();</span>
+<span class="nc" id="L277">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L280">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L281">					temp.setLabel(data.get(i).getMajorsName());</span>
+<span class="nc" id="L282">					temp.setValue(data.get(i).getMajorsId());</span>
+<span class="nc" id="L283">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L287" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L288">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L290">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L293">		} catch (Exception e) {</span>
+<span class="nc" id="L294">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L295">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+	
+	@Override
+	public Response getComboRole() {
+		try {
+<span class="nc" id="L302">			List&lt;RoleModel&gt; data = roleRepository.getAllRoles();</span>
+<span class="nc" id="L303">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L305" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L306">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L307">					temp.setLabel(data.get(i).getRoleName());</span>
+<span class="nc" id="L308">					temp.setValue(data.get(i).getRoleId());</span>
+<span class="nc" id="L309">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L313" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L314">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L316">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L319">		} catch (Exception e) {</span>
+<span class="nc" id="L320">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L321">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+	
+	@Override
+	public Response getComboStatus() {
+		try {
+<span class="nc" id="L328">			List&lt;SystemModel&gt; data = systemRepository.getDataSystem(&quot;USER&quot;, &quot;STATUS&quot;);</span>
+<span class="nc" id="L329">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L331" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L332">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L333">					temp.setLabel(data.get(i).getSysVal());</span>
+<span class="nc" id="L334">					temp.setValue(data.get(i).getSysCd());</span>
+<span class="nc" id="L335">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L339" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L340">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L342">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L345">		} catch (Exception e) {</span>
+<span class="nc" id="L346">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L347">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+
+	@Override
+	public Response doUpdateProfilePicture(UserModel dto) {
+		try {
+<span class="nc" id="L354">			UserModel data = repository.doSearchById(dto.getEmail());</span>
+<span class="nc" id="L355">			dto.setUpdatedBy(data.getName());</span>
+			
+<span class="nc" id="L357">			int result = repository.doUpdateProfilePicture(dto);</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L359">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L361">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L364">		} catch (Exception e) {</span>
+<span class="nc" id="L365">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L366">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L367">						&quot;MSTD0000AERR&quot;, null);</span>
+		
+		}
+	}
+
+	@Override
+	public Response doUpdatePassword(UserModel dto) {
+		try {
+<span class="nc" id="L375">			UserModel data = repository.doSearchById(dto.getEmail());</span>
+<span class="nc" id="L376">			dto.setUpdatedBy(data.getName());</span>
+<span class="nc" id="L377">			dto.setPassword(Common.MD5(dto.getPassword()));</span>
+<span class="nc" id="L378">			int result = repository.doUpdatePassword(dto);</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L380">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L382">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L385">		} catch (Exception e) {</span>
+<span class="nc" id="L386">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L387">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L388">						&quot;MSTD0000AERR&quot;, null);</span>
+		
+		}
+	}
+	
+	@Override
+	public Response doUpdateStatus(UserModel dto) {
+		try {
+<span class="nc" id="L396">			UserModel data = repository.doSearchById(dto.getEmail());</span>
+<span class="nc" id="L397">			dto.setUpdatedBy(data.getName());</span>
+<span class="nc" id="L398">			dto.setPassword(Common.MD5(dto.getPassword()));</span>
+<span class="nc" id="L399">			int result = repository.doUpdateStatus(dto);</span>
+<span class="nc bnc" id="L400" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L401">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L403">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L406">		} catch (Exception e) {</span>
+<span class="nc" id="L407">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L408">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L409">						&quot;MSTD0000AERR&quot;, null);</span>
+		
+		}
+	}
+
+	@Override
+	public Response getComboDivision() {
+		try {
+<span class="nc" id="L417">			List&lt;SystemModel&gt; data = systemRepository.getDataSystem(&quot;STAFF&quot;, &quot;DIVISI_STAFF&quot;);</span>
+<span class="nc" id="L418">			List&lt;ComboModel&gt; list = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc bnc" id="L419" title="All 2 branches missed.">			if (data != null){</span>
+<span class="nc bnc" id="L420" title="All 2 branches missed.">				for(int i=0; i&lt;data.size(); i++){</span>
+<span class="nc" id="L421">					ComboModel temp = new ComboModel();</span>
+<span class="nc" id="L422">					temp.setLabel(data.get(i).getSysVal());</span>
+<span class="nc" id="L423">					temp.setValue(data.get(i).getSysCd());</span>
+<span class="nc" id="L424">					list.add(temp);</span>
+				}
+			}
+			
+<span class="nc bnc" id="L428" title="All 4 branches missed.">			if (list != null &amp;&amp; list.size() &gt; 0) {</span>
+<span class="nc" id="L429">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0120AINF&quot;), &quot;MSTD0120AINF&quot;, list);</span>
+			} else {
+<span class="nc" id="L431">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0059AERR&quot;), &quot;MSTD0059AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L434">		} catch (Exception e) {</span>
+<span class="nc" id="L435">			logger.error(e.getMessage(), e);</span>
+<span class="nc" id="L436">			return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()), &quot;MSTD0000AERR&quot;,null);</span>
+		}
+	}
+
+	@Override
+	public Response doAdd(UserModel dto) {
+		try {
+<span class="nc" id="L443">			String password = Common.MD5(Constanta.PASSWORD_DEFAULT);</span>
+<span class="nc" id="L444">			dto.setPassword(password);</span>
+<span class="nc" id="L445">			dto.setUsername(dto.getEmail());</span>
+<span class="nc" id="L446">			dto.setStatus(&quot;ST1&quot;); </span>
+<span class="nc" id="L447">			int result = repository.doRegitrasi(dto);</span>
+<span class="nc bnc" id="L448" title="All 2 branches missed.">			if (&quot;MBR&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L449">				result = result + repository.doSaveDataStudent(dto);</span>
+<span class="nc bnc" id="L450" title="All 2 branches missed.">			}else if (&quot;OFC&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L451">				result = result + repository.doSaveDataEmployee(dto);</span>
+			}
+<span class="nc bnc" id="L453" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L454">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L456">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L459">		} catch (Exception e) {</span>
+<span class="nc" id="L460">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L461" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L462">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, dto.getEmail()),</span>
+<span class="nc" id="L463">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L465">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L466">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public Response doEdit(UserModel dto) {
+		try {
+<span class="nc" id="L475">			UserModel previousData = repository.doSearchById(dto.getEmail());</span>
+<span class="nc" id="L476">			int result = repository.doUpdateUser(dto);</span>
+<span class="nc bnc" id="L477" title="All 2 branches missed.">			if (previousData.getRoleId().equals(dto.getRoleId())){</span>
+<span class="nc bnc" id="L478" title="All 2 branches missed.">				if (&quot;MBR&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L479">					result = result + repository.doUpdateStudents(dto);</span>
+<span class="nc bnc" id="L480" title="All 2 branches missed.">				}else if (&quot;OFC&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L481">					result = result + repository.doUpdateEmployee(dto);</span>
+				}
+<span class="nc" id="L483">			}else{</span>
+				// delete previous data
+<span class="nc" id="L485">				result = result + repository.doDeleteStudent(dto);</span>
+<span class="nc" id="L486">				result = result + repository.doDeleteEmployee(dto);</span>
+<span class="nc bnc" id="L487" title="All 2 branches missed.">				if (&quot;MBR&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L488">					result = result + repository.doSaveDataStudent(dto);</span>
+<span class="nc bnc" id="L489" title="All 2 branches missed.">				}else if (&quot;OFC&quot;.equals(dto.getRoleId())){</span>
+<span class="nc" id="L490">					result = result + repository.doSaveDataEmployee(dto);</span>
+				}
+			}
+<span class="nc bnc" id="L493" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L494">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L496">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L499">		} catch (Exception e) {</span>
+<span class="nc" id="L500">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L501" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L502">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L503">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L505">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L506">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	}
+
+	@Override
+	public Response doDelete(UserModel user) {
+		try {
+<span class="nc" id="L515">			int result = repository.doDeleteEmployee(user);</span>
+<span class="nc" id="L516">			result = result + repository.doDeleteStudent(user);</span>
+<span class="nc" id="L517">			result = result + repository.doDeleteUser(user);</span>
+			
+<span class="nc bnc" id="L519" title="All 2 branches missed.">			if (result &gt; 0) {</span>
+<span class="nc" id="L520">				return new Response(Constanta.SUCCESS, messages.find(&quot;message.MSTD0101AINF&quot;), &quot;MSTD0101AINF&quot;, null);</span>
+			} else {
+<span class="nc" id="L522">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0063AERR&quot;), &quot;MSTD0063AERR&quot;, null);</span>
+			}
+
+<span class="nc" id="L525">		} catch (Exception e) {</span>
+<span class="nc" id="L526">			logger.error(e.getMessage(), e);</span>
+<span class="nc bnc" id="L527" title="All 4 branches missed.">			if (e.getMessage() != null &amp;&amp; e.getMessage().contains(Constanta.DUPLICATE)) {</span>
+<span class="nc" id="L528">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0039AERR&quot;, &quot;username atau email&quot;),</span>
+<span class="nc" id="L529">						&quot;MSTD0039AERR&quot;, null);</span>
+			} else {
+<span class="nc" id="L531">				return new Response(Constanta.FAILED, messages.find(&quot;message.MSTD0000AERR&quot;, e.getMessage()),</span>
+<span class="nc" id="L532">						&quot;MSTD0000AERR&quot;, null);</span>
+			}
+
+		}
+	
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>

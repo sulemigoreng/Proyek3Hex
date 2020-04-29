@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PerpustakaanWebApp</a> &gt; <a href="index.source.html" class="el_package">com.id.perpus.book</a> &gt; <span class="el_source">BookRepository.java</span></div><h1>BookRepository.java</h1><pre class="source lang-java linenums">package com.id.perpus.book;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import com.id.perpus.common.ComboModel;
+import com.id.perpus.common.Common;
+import com.id.perpus.common.Constanta;
+
+@Repository
+<span class="fc" id="L18">public class BookRepository {</span>
+
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
+	public List&lt;BookModel&gt; doSearch(BookModel dto) throws Exception{
+<span class="nc" id="L24">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L25">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L26">			 .append(&quot; b.book_cd,  &quot;)</span>
+<span class="nc" id="L27">			 .append(&quot; b.title,  &quot;)</span>
+<span class="nc" id="L28">			 .append(&quot; b.author,  &quot;)</span>
+<span class="nc" id="L29">			 .append(&quot; b.subject_1,  &quot;)</span>
+<span class="nc" id="L30">			 .append(&quot; b.subject_2,  &quot;)</span>
+<span class="nc" id="L31">			 .append(&quot; b.book_cover,  &quot;)</span>
+<span class="nc" id="L32">			 .append(&quot; b.book_summary,  &quot;)</span>
+<span class="nc" id="L33">			 .append(&quot; b.publisher,  &quot;)</span>
+<span class="nc" id="L34">		     .append(&quot; b.publication_year,  &quot;)</span>
+<span class="nc" id="L35">		     .append(&quot; b.place_publication,  &quot;)</span>
+<span class="nc" id="L36">		     .append(&quot; b.number_page,  &quot;)</span>
+<span class="nc" id="L37">		     .append(&quot; b.stock, &quot;)</span>
+<span class="nc" id="L38">		     .append(&quot; b.stock - ((select ifnull(sum(mb.number_book),0) from tb_r_missing_book mb where mb.book_cd=b.book_cd) + &quot;)  </span>
+<span class="nc" id="L39">             .append(&quot; (select count(l.loan_no) from tb_r_loan l where l.book_cd=b.book_cd)) as avaliable,&quot;)</span>
+<span class="nc" id="L40">		     .append(&quot; b.location, &quot;)</span>
+<span class="nc" id="L41">		     .append(&quot; b.category, &quot;)</span>
+<span class="nc" id="L42">		     .append(&quot; (select s.sys_val from tb_m_system s where s.sys_cat='CATALOG_BOOK' AND s.sys_sub_cat='CATEGORY' AND s.sys_cd=b.category) as category_name,&quot;)</span>
+<span class="nc" id="L43">		     .append(&quot; b.created_by,  &quot;)</span>
+<span class="nc" id="L44">			 .append(&quot; b.created_dt,  &quot;)</span>
+<span class="nc" id="L45">			 .append(&quot; b.updated_by,  &quot;)</span>
+<span class="nc" id="L46">			 .append(&quot; b.updated_dt  &quot;)</span>
+<span class="nc" id="L47">			 .append(&quot; FROM tb_m_book b  &quot;)</span>
+<span class="nc" id="L48">		     .append(&quot; WHERE 1=1 &quot;);</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">		if(dto.getTitle() != null &amp;&amp; !dto.getTitle().isEmpty()){</span>
+<span class="nc" id="L50">			query.append(&quot; AND b.title LIKE '%&quot;+dto.getTitle()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L52" title="All 4 branches missed.">		if(dto.getAuthor() != null &amp;&amp; !dto.getAuthor().isEmpty()){</span>
+<span class="nc" id="L53">			query.append(&quot; AND b.author LIKE '%&quot;+dto.getAuthor()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L55" title="All 4 branches missed.">		if(dto.getPublisher() != null &amp;&amp; !dto.getPublisher().isEmpty()){</span>
+<span class="nc" id="L56">			query.append(&quot; AND b.publisher LIKE '%&quot;+dto.getPublisher()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L58" title="All 4 branches missed.">		if(dto.getPublishYear() != null &amp;&amp; !dto.getPublishYear().isEmpty()){</span>
+<span class="nc" id="L59">			query.append(&quot; AND b.publication_year = '&quot;+dto.getPublishYear()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L61" title="All 4 branches missed.">		if(dto.getCategory() != null &amp;&amp; !dto.getCategory().isEmpty()){</span>
+<span class="nc" id="L62">			query.append(&quot; AND b.category = '&quot;+dto.getCategory()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L64" title="All 4 branches missed.">		if(dto.getSubject1() != null &amp;&amp; !dto.getSubject1().isEmpty()){</span>
+<span class="nc" id="L65">			query.append(&quot; AND ( b.subject_1 LIKE '%&quot;+dto.getSubject1()+&quot;%' OR b.subject_2 LIKE '%&quot;+dto.getSubject1()+&quot;%' ) &quot;);</span>
+		}
+		
+<span class="nc" id="L68">		query.append(&quot; ORDER  BY b.title ASC LIMIT ? OFFSET ?&quot;);</span>
+<span class="nc" id="L69">		List&lt;BookModel&gt; books = new ArrayList&lt;BookModel&gt;();</span>
+
+<span class="nc" id="L71">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),dto.getLimit(), dto.getOffset());</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L73">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L74">			System.out.println(row);</span>
+<span class="nc" id="L75">			BookModel book = new BookModel();</span>
+<span class="nc" id="L76">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L77">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L78">			book.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L79">			book.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L80">			book.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L81">			book.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L83">			book.setBookCode(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L84">			book.setTitle(Common.toString(row.get(&quot;title&quot;)));</span>
+<span class="nc" id="L85">			book.setAuthor(Common.toString(row.get(&quot;author&quot;)));</span>
+<span class="nc" id="L86">			book.setSubject1(Common.toString(row.get(&quot;subject_1&quot;)));</span>
+<span class="nc" id="L87">			book.setSubject2(Common.toString(row.get(&quot;subject_2&quot;)));</span>
+<span class="nc" id="L88">			book.setBookCover(Common.toString(row.get(&quot;book_cover&quot;)));</span>
+<span class="nc" id="L89">			book.setBookSummary(Common.toString(row.get(&quot;book_summary&quot;)));</span>
+<span class="nc" id="L90">			book.setPublisher(Common.toString(row.get(&quot;publisher&quot;)));</span>
+<span class="nc" id="L91">			book.setPublishYearDate((Date) row.get(&quot;publication_year&quot;));</span>
+<span class="nc" id="L92">			book.setPublishYear(Common.formatDateYearOnly(book.getPublishYearDate()));</span>
+<span class="nc" id="L93">			book.setLocation(Common.toString(row.get(&quot;location&quot;)));</span>
+<span class="nc" id="L94">			book.setNumberPage((Integer)row.get(&quot;number_page&quot;));</span>
+<span class="nc" id="L95">			book.setStock((Integer) row.get(&quot;stock&quot;));</span>
+<span class="nc" id="L96">			book.setCategory(Common.toString(row.get(&quot;category&quot;)));</span>
+<span class="nc" id="L97">			book.setCategoryName(Common.toString(row.get(&quot;category_name&quot;)));</span>
+<span class="nc" id="L98">			book.setAvaliable(((BigDecimal) row.get(&quot;avaliable&quot;)).intValue());</span>
+			
+<span class="nc" id="L100">			books.add(book);</span>
+		}
+		
+<span class="nc" id="L103">		return books;</span>
+	}
+	
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	public Long doCount(BookModel dto) throws Exception{
+<span class="nc" id="L108">		Long count = (long)0;</span>
+<span class="nc" id="L109">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L110">		query.append(&quot;SELECT COUNT(*) COUNT FROM tb_m_book b WHERE 1=1&quot;);</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">		if(dto.getTitle() != null &amp;&amp; !dto.getTitle().isEmpty()){</span>
+<span class="nc" id="L112">			query.append(&quot; AND b.title LIKE '%&quot;+dto.getTitle()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L114" title="All 4 branches missed.">		if(dto.getAuthor() != null &amp;&amp; !dto.getAuthor().isEmpty()){</span>
+<span class="nc" id="L115">			query.append(&quot; AND b.author LIKE '%&quot;+dto.getAuthor()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L117" title="All 4 branches missed.">		if(dto.getPublisher() != null &amp;&amp; !dto.getPublisher().isEmpty()){</span>
+<span class="nc" id="L118">			query.append(&quot; AND b.publisher LIKE '%&quot;+dto.getPublisher()+&quot;%'&quot;);</span>
+		}
+<span class="nc bnc" id="L120" title="All 4 branches missed.">		if(dto.getPublishYear() != null &amp;&amp; !dto.getPublishYear().isEmpty()){</span>
+<span class="nc" id="L121">			query.append(&quot; AND b.publication_year = '&quot;+dto.getPublishYear()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L123" title="All 4 branches missed.">		if(dto.getCategory() != null &amp;&amp; !dto.getCategory().isEmpty()){</span>
+<span class="nc" id="L124">			query.append(&quot; AND b.category = '&quot;+dto.getCategory()+&quot;'&quot;);</span>
+		}
+<span class="nc bnc" id="L126" title="All 4 branches missed.">		if(dto.getSubject1() != null &amp;&amp; !dto.getSubject1().isEmpty()){</span>
+<span class="nc" id="L127">			query.append(&quot; AND ( b.subject_1 LIKE '%&quot;+dto.getSubject1()+&quot;%' OR b.subject_2 LIKE '%&quot;+dto.getSubject1()+&quot;%' ) &quot;);</span>
+		}
+		
+<span class="nc" id="L130">	    List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString());</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">		for (Map row : rows) {</span>
+<span class="nc" id="L132">			count = ((Long)row.get(&quot;COUNT&quot;));	</span>
+		}
+<span class="nc" id="L134">		return count;</span>
+	}
+	
+	public BookModel getBookByCd(String bookCd) throws Exception{
+<span class="nc" id="L138">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L139">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L140">			 .append(&quot; b.book_cd,  &quot;)</span>
+<span class="nc" id="L141">			 .append(&quot; b.title,  &quot;)</span>
+<span class="nc" id="L142">			 .append(&quot; b.author,  &quot;)</span>
+<span class="nc" id="L143">			 .append(&quot; b.subject_1,  &quot;)</span>
+<span class="nc" id="L144">			 .append(&quot; b.subject_2,  &quot;)</span>
+<span class="nc" id="L145">			 .append(&quot; b.book_cover,  &quot;)</span>
+<span class="nc" id="L146">			 .append(&quot; b.book_summary,  &quot;)</span>
+<span class="nc" id="L147">			 .append(&quot; b.publisher,  &quot;)</span>
+<span class="nc" id="L148">		     .append(&quot; b.publication_year,  &quot;)</span>
+<span class="nc" id="L149">		     .append(&quot; b.place_publication,  &quot;)</span>
+<span class="nc" id="L150">		     .append(&quot; b.number_page,  &quot;)</span>
+<span class="nc" id="L151">		     .append(&quot; b.stock, &quot;)</span>
+<span class="nc" id="L152">		     .append(&quot; b.stock - ((select ifnull(sum(mb.number_book),0) from tb_r_missing_book mb where mb.book_cd=b.book_cd) + &quot;)  </span>
+<span class="nc" id="L153">             .append(&quot; (select count(l.loan_no) from tb_r_loan l where l.book_cd=b.book_cd)) as avaliable,&quot;)</span>
+<span class="nc" id="L154">		     .append(&quot; b.location, &quot;)</span>
+<span class="nc" id="L155">		     .append(&quot; b.category, &quot;)</span>
+<span class="nc" id="L156">		     .append(&quot; (select s.sys_val from tb_m_system s where s.sys_cat='CATALOG_BOOK' AND s.sys_sub_cat='CATEGORY' AND s.sys_cd=b.category) as category_name,&quot;)</span>
+<span class="nc" id="L157">		     .append(&quot; ifnull((select sum(mb.number_book) from tb_r_missing_book mb where mb.book_cd = b.book_cd ),0) as lost, &quot;)</span>
+<span class="nc" id="L158">		     .append(&quot; (select count(l.loan_no) from tb_r_loan l where l.book_cd = b.book_cd and l.loan_status ='BL1' ) as borrowed, &quot;)</span>
+<span class="nc" id="L159">		     .append(&quot; b.created_by,  &quot;)</span>
+<span class="nc" id="L160">			 .append(&quot; b.created_dt,  &quot;)</span>
+<span class="nc" id="L161">			 .append(&quot; b.updated_by,  &quot;)</span>
+<span class="nc" id="L162">			 .append(&quot; b.updated_dt  &quot;)</span>
+<span class="nc" id="L163">			 .append(&quot; FROM tb_m_book b  &quot;)</span>
+<span class="nc" id="L164">		     .append(&quot; WHERE b.book_cd = ? &quot;);</span>
+		
+<span class="nc" id="L166">		BookModel book = null;</span>
+
+<span class="nc" id="L168">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),bookCd);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L170">			book = new BookModel();</span>
+<span class="nc" id="L171">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L172">			System.out.println(row);</span>
+<span class="nc" id="L173">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L174">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L175">			book.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L176">			book.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L177">			book.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L178">			book.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L180">			book.setBookCode(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L181">			book.setTitle(Common.toString(row.get(&quot;title&quot;)));</span>
+<span class="nc" id="L182">			book.setAuthor(Common.toString(row.get(&quot;author&quot;)));</span>
+<span class="nc" id="L183">			book.setSubject1(Common.toString(row.get(&quot;subject_1&quot;)));</span>
+<span class="nc" id="L184">			book.setSubject2(Common.toString(row.get(&quot;subject_2&quot;)));</span>
+<span class="nc" id="L185">			book.setBookCover(Common.toString(row.get(&quot;book_cover&quot;)));</span>
+<span class="nc" id="L186">			book.setBookSummary(Common.toString(row.get(&quot;book_summary&quot;)));</span>
+<span class="nc" id="L187">			book.setPublisher(Common.toString(row.get(&quot;publisher&quot;)));</span>
+<span class="nc" id="L188">			book.setPlacePublication(Common.toString(row.get(&quot;place_publication&quot;)));</span>
+<span class="nc" id="L189">			book.setPublishYearDate((Date) row.get(&quot;publication_year&quot;));</span>
+<span class="nc" id="L190">			book.setPublishYear(Common.formatDateYearOnly(book.getPublishYearDate()));</span>
+<span class="nc" id="L191">			book.setLocation(Common.toString(row.get(&quot;location&quot;)));</span>
+<span class="nc" id="L192">			book.setNumberPage((Integer)row.get(&quot;number_page&quot;));</span>
+<span class="nc" id="L193">			book.setStock((Integer) row.get(&quot;stock&quot;));</span>
+<span class="nc" id="L194">			book.setCategory(Common.toString(row.get(&quot;category&quot;)));</span>
+<span class="nc" id="L195">			book.setCategoryName(Common.toString(row.get(&quot;category_name&quot;)));</span>
+<span class="nc" id="L196">			book.setAvaliable(((BigDecimal) row.get(&quot;avaliable&quot;)).intValue());</span>
+<span class="nc" id="L197">			book.setLost(((BigDecimal) row.get(&quot;lost&quot;)).intValue());</span>
+<span class="nc" id="L198">			book.setBorrowed(((Long) row.get(&quot;borrowed&quot;)).intValue());</span>
+		}
+		
+<span class="nc" id="L201">		return book;</span>
+	}
+	
+	public List&lt;ComboModel&gt; getCombo(){
+<span class="nc" id="L205">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L206">		sb.append(&quot;SELECT id_buku as value, CONCAT(id_buku, ' - ', judul_buku) AS label FROM tb_buku &quot;);</span>
+<span class="nc" id="L207">		List&lt;ComboModel&gt; dtos = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc" id="L208">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(sb.toString());</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L210">			ComboModel model = new ComboModel();</span>
+<span class="nc" id="L211">			model.setValue(Common.toString(row.get(&quot;value&quot;)));</span>
+<span class="nc" id="L212">			model.setLabel(Common.toString(row.get(&quot;label&quot;)));</span>
+<span class="nc" id="L213">			dtos.add(model);</span>
+		}
+		
+<span class="nc" id="L216">		return dtos;</span>
+	}
+	
+	public List&lt;TransaksiModel&gt; getDataPinjam(String nim){
+<span class="nc" id="L220">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L221">		sb.append(&quot;  SELECT p.id_pinjam  &quot;)</span>
+<span class="nc" id="L222">		.append(&quot;       , p.nim  &quot;)</span>
+<span class="nc" id="L223">		.append(&quot;       , p.id_buku  &quot;)</span>
+<span class="nc" id="L224">		.append(&quot;       , (SELECT b.judul_buku  &quot;)</span>
+<span class="nc" id="L225">		.append(&quot;          FROM  &quot;)</span>
+<span class="nc" id="L226">		.append(&quot;            tb_buku b  &quot;)</span>
+<span class="nc" id="L227">		.append(&quot;          WHERE  &quot;)</span>
+<span class="nc" id="L228">		.append(&quot;            b.id_buku = p.id_buku) judul_buku  &quot;)</span>
+<span class="nc" id="L229">		.append(&quot;       , p.tgl_pinjam  &quot;)</span>
+<span class="nc" id="L230">		.append(&quot;       , adddate(p.tgl_pinjam, p.lama_pinjam) jatuh_tempo  &quot;)</span>
+<span class="nc" id="L231">		.append(&quot;       , if ((datediff(p.tgl_kembali, p.tgl_pinjam) - p.lama_pinjam) &gt; 0,  &quot;)</span>
+<span class="nc" id="L232">		.append(&quot;              (datediff(p.tgl_kembali, p.tgl_pinjam) - p.lama_pinjam) * 2500,  &quot;)</span>
+<span class="nc" id="L233">		.append(&quot;              0) as denda  &quot;)</span>
+<span class="nc" id="L234">		.append(&quot;       , if (p.tgl_kembali is null ,  &quot;)</span>
+<span class="nc" id="L235">		.append(&quot;              'Belum dikembalikan',  &quot;)</span>
+<span class="nc" id="L236">		.append(&quot;              'Sudah dikembalikan') as status  &quot;)</span>
+<span class="nc" id="L237">		.append(&quot;  FROM   tb_pinjam p  &quot;)</span>
+<span class="nc" id="L238">		.append(&quot;  WHERE p.nim = ? &quot;)</span>
+<span class="nc" id="L239">		.append(&quot;    AND p.tgl_kembali is null &quot;);</span>
+<span class="nc" id="L240">		List&lt;TransaksiModel&gt; dtos = new ArrayList&lt;TransaksiModel&gt;();</span>
+<span class="nc" id="L241">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(sb.toString(),nim);</span>
+<span class="nc bnc" id="L242" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L243">			TransaksiModel model = new TransaksiModel();</span>
+<span class="nc" id="L244">			model.setIdPinjam(Common.toString(row.get(&quot;id_pinjam&quot;)));</span>
+<span class="nc" id="L245">			model.setNim(Common.toString(row.get(&quot;nim&quot;)));</span>
+<span class="nc" id="L246">			model.setIdBuku(Common.toString(row.get(&quot;id_buku&quot;)));</span>
+<span class="nc" id="L247">			model.setJudulBuku(Common.toString(row.get(&quot;judul_buku&quot;)));</span>
+<span class="nc" id="L248">			model.setJatuhTempo(Constanta.sdf.format((Date)row.get(&quot;jatuh_tempo&quot;)));</span>
+<span class="nc" id="L249">			model.setTglPinjam(Constanta.sdf.format((Date)row.get(&quot;tgl_pinjam&quot;)));</span>
+<span class="nc" id="L250">			model.setDenda(Common.toString(row.get(&quot;denda&quot;)));</span>
+<span class="nc" id="L251">			model.setStatus(Common.toString(row.get(&quot;status&quot;)));</span>
+			
+<span class="nc" id="L253">			dtos.add(model);</span>
+		}
+		
+<span class="nc" id="L256">		return dtos;</span>
+	}
+	
+	public List&lt;TransaksiModel&gt; getDenda(String idPinjam){
+<span class="nc" id="L260">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L261">		sb.append(&quot;  SELECT p.id_pinjam  &quot;)</span>
+<span class="nc" id="L262">		.append(&quot;       , p.nim  &quot;)</span>
+<span class="nc" id="L263">		.append(&quot;       , p.id_buku  &quot;)</span>
+<span class="nc" id="L264">		.append(&quot;       , (SELECT b.judul_buku  &quot;)</span>
+<span class="nc" id="L265">		.append(&quot;          FROM  &quot;)</span>
+<span class="nc" id="L266">		.append(&quot;            tb_buku b  &quot;)</span>
+<span class="nc" id="L267">		.append(&quot;          WHERE  &quot;)</span>
+<span class="nc" id="L268">		.append(&quot;            b.id_buku = p.id_buku) judul_buku  &quot;)</span>
+<span class="nc" id="L269">		.append(&quot;       , p.tgl_pinjam  &quot;)</span>
+<span class="nc" id="L270">		.append(&quot;       , adddate(p.tgl_pinjam, p.lama_pinjam) jatuh_tempo  &quot;)</span>
+<span class="nc" id="L271">		.append(&quot;       , if ((datediff(p.tgl_kembali, p.tgl_pinjam) - p.lama_pinjam) &gt; 0,  &quot;)</span>
+<span class="nc" id="L272">		.append(&quot;              (datediff(p.tgl_kembali, p.tgl_pinjam) - p.lama_pinjam) * 2500,  &quot;)</span>
+<span class="nc" id="L273">		.append(&quot;              0) as denda  &quot;)</span>
+<span class="nc" id="L274">		.append(&quot;       , if (p.tgl_kembali is null ,  &quot;)</span>
+<span class="nc" id="L275">		.append(&quot;              'Belum dikembalikan',  &quot;)</span>
+<span class="nc" id="L276">		.append(&quot;              'Sudah dikembalikan') as status  &quot;)</span>
+<span class="nc" id="L277">		.append(&quot;  FROM   tb_pinjam p  &quot;)</span>
+<span class="nc" id="L278">		.append(&quot;  WHERE p.id_pinjam = ? &quot;);</span>
+<span class="nc" id="L279">		List&lt;TransaksiModel&gt; dtos = new ArrayList&lt;TransaksiModel&gt;();</span>
+<span class="nc" id="L280">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(sb.toString(), idPinjam);</span>
+<span class="nc bnc" id="L281" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L282">			TransaksiModel model = new TransaksiModel();</span>
+<span class="nc" id="L283">			model.setIdPinjam(Common.toString(row.get(&quot;id_pinjam&quot;)));</span>
+<span class="nc" id="L284">			model.setNim(Common.toString(row.get(&quot;nim&quot;)));</span>
+<span class="nc" id="L285">			model.setIdBuku(Common.toString(row.get(&quot;id_buku&quot;)));</span>
+<span class="nc" id="L286">			model.setJudulBuku(Common.toString(row.get(&quot;judul_buku&quot;)));</span>
+<span class="nc" id="L287">			model.setJatuhTempo(Constanta.sdf.format((Date)row.get(&quot;jatuh_tempo&quot;)));</span>
+<span class="nc" id="L288">			model.setTglPinjam(Constanta.sdf.format((Date)row.get(&quot;tgl_pinjam&quot;)));</span>
+<span class="nc" id="L289">			model.setDenda(Common.toString(row.get(&quot;denda&quot;)));</span>
+<span class="nc" id="L290">			model.setStatus(Common.toString(row.get(&quot;status&quot;)));</span>
+			
+<span class="nc" id="L292">			dtos.add(model);</span>
+		}
+		
+<span class="nc" id="L295">		return dtos;</span>
+	}
+	
+	public int doPinjam(TransaksiModel dto) throws Exception{
+<span class="nc" id="L299">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L300">		query.append(&quot; INSERT INTO tb_pinjam ( &quot;)</span>
+<span class="nc" id="L301">		     .append(&quot; NIM, &quot;)</span>
+<span class="nc" id="L302">		     .append(&quot; id_buku, &quot;)</span>
+<span class="nc" id="L303">		     .append(&quot; tgl_pinjam, &quot;)</span>
+<span class="nc" id="L304">		     .append(&quot; lama_pinjam &quot;)</span>
+<span class="nc" id="L305">		     .append(&quot; ) VALUES ( &quot;)</span>
+<span class="nc" id="L306">		     .append(&quot; ?, &quot;)// 1</span>
+<span class="nc" id="L307">		     .append(&quot; ?, &quot;)// 2</span>
+<span class="nc" id="L308">		     .append(&quot; ?, &quot;)// 3 </span>
+<span class="nc" id="L309">		     .append(&quot; ? ) &quot;);// 4</span>
+	
+<span class="nc" id="L311">		int row = jdbcTemplate.update(query.toString(),</span>
+<span class="nc" id="L312">				dto.getNim(), // 1</span>
+<span class="nc" id="L313">				dto.getIdBuku(),// 2</span>
+<span class="nc" id="L314">				dto.getTglPinjam(),</span>
+<span class="nc" id="L315">				dto.getLamaPinjam());// 4</span>
+<span class="nc" id="L316">		return row;</span>
+	}
+	
+	public int doKembali(TransaksiModel dto) throws Exception{
+<span class="nc" id="L320">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L321">		query.append(&quot; UPDATE tb_pinjam SET &quot;)</span>
+<span class="nc" id="L322">		     .append(&quot; tgl_kembali = ? &quot;)</span>
+<span class="nc" id="L323">		     .append(&quot; WHERE id_pinjam = ? &quot;);// 4</span>
+	
+<span class="nc" id="L325">		int row = jdbcTemplate.update(query.toString(),</span>
+<span class="nc" id="L326">				dto.getTglKembali(),</span>
+<span class="nc" id="L327">				dto.getIdPinjam());// 3</span>
+<span class="nc" id="L328">		return row;</span>
+	}
+
+	public List&lt;ComboModel&gt; getComboBukuPinjam(String nim) {
+<span class="nc" id="L332">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L333">		sb.append(&quot;  SELECT p.id_pinjam  as value&quot;)</span>
+<span class="nc" id="L334">		.append(&quot;       ,CONCAT( p.id_buku , ' - ',  &quot;)</span>
+<span class="nc" id="L335">		.append(&quot;        (SELECT b.judul_buku  &quot;)</span>
+<span class="nc" id="L336">		.append(&quot;          FROM  &quot;)</span>
+<span class="nc" id="L337">		.append(&quot;            tb_buku b  &quot;)</span>
+<span class="nc" id="L338">		.append(&quot;          WHERE  &quot;)</span>
+<span class="nc" id="L339">		.append(&quot;            b.id_buku = p.id_buku)) as label &quot;)</span>
+<span class="nc" id="L340">		.append(&quot;  FROM   tb_pinjam p  &quot;)</span>
+<span class="nc" id="L341">		.append(&quot;  WHERE p.nim = ? &quot;)</span>
+<span class="nc" id="L342">		.append(&quot;    AND p.tgl_kembali is null &quot;);</span>
+		
+<span class="nc" id="L344">		List&lt;ComboModel&gt; dtos = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc" id="L345">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(sb.toString(), nim);</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L347">			ComboModel model = new ComboModel();</span>
+<span class="nc" id="L348">			model.setValue(Common.toString(row.get(&quot;value&quot;)));</span>
+<span class="nc" id="L349">			model.setLabel(Common.toString(row.get(&quot;label&quot;)));</span>
+<span class="nc" id="L350">			dtos.add(model);</span>
+		}
+		
+<span class="nc" id="L353">		return dtos;</span>
+	}
+	
+	public int getlastIdByCategory(String category){
+<span class="nc" id="L357">		StringBuffer query = new StringBuffer();</span>
+<span class="nc" id="L358">		query.append(&quot;select ifnull(substr(max(book_cd),5),'0') id &quot;);</span>
+<span class="nc" id="L359">		query.append(&quot;from tb_m_book &quot;);</span>
+<span class="nc" id="L360">		query.append(&quot;where category=? &quot;);</span>
+<span class="nc" id="L361">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(), category);</span>
+<span class="nc" id="L362">		String id = &quot;0&quot;;</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L364">			id = Common.toString(row.get(&quot;id&quot;));</span>
+		}
+<span class="nc" id="L366">		return Common.stringToInteger(id);</span>
+	}
+
+	public int doUpdateBook(BookModel book) {
+<span class="nc" id="L370">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L371">		sb.append(&quot; UPDATE tb_m_book set&quot;);</span>
+<span class="nc" id="L372">		sb.append(&quot; title = ?,&quot;);</span>
+<span class="nc" id="L373">		sb.append(&quot; author = ?,&quot;);</span>
+<span class="nc" id="L374">		sb.append(&quot; subject_1 = ?,&quot;);</span>
+<span class="nc" id="L375">		sb.append(&quot; subject_2 = ?,&quot;);</span>
+<span class="nc" id="L376">		sb.append(&quot; book_cover = ?,&quot;);</span>
+<span class="nc" id="L377">		sb.append(&quot; book_summary = ?,&quot;);</span>
+<span class="nc" id="L378">		sb.append(&quot; publisher = ?,&quot;);</span>
+<span class="nc" id="L379">		sb.append(&quot; publication_year = ?,&quot;);</span>
+<span class="nc" id="L380">		sb.append(&quot; place_publication = ?,&quot;);</span>
+<span class="nc" id="L381">		sb.append(&quot; number_page = ?,&quot;);</span>
+<span class="nc" id="L382">		sb.append(&quot; stock = ?,&quot;);</span>
+<span class="nc" id="L383">		sb.append(&quot; location = ?,&quot;);</span>
+<span class="nc" id="L384">		sb.append(&quot; category = ?,&quot;);</span>
+<span class="nc" id="L385">		sb.append(&quot; updated_by = ?,&quot;);</span>
+<span class="nc" id="L386">		sb.append(&quot; updated_dt = ?&quot;);</span>
+<span class="nc" id="L387">		sb.append(&quot; WHERE book_cd = ?&quot;);</span>
+<span class="nc" id="L388">		return jdbcTemplate.update(sb.toString(), </span>
+<span class="nc" id="L389">				book.getTitle(),</span>
+<span class="nc" id="L390">				book.getAuthor(),</span>
+<span class="nc" id="L391">				book.getSubject1(),</span>
+<span class="nc" id="L392">				book.getSubject2(),</span>
+<span class="nc" id="L393">				book.getBookCover(),</span>
+<span class="nc" id="L394">				book.getBookSummary(),</span>
+<span class="nc" id="L395">				book.getPublisher(),</span>
+<span class="nc" id="L396">				book.getPublishYear(),</span>
+<span class="nc" id="L397">				book.getPlacePublication(),</span>
+<span class="nc" id="L398">				book.getNumberPage(),</span>
+<span class="nc" id="L399">				book.getStock(),</span>
+<span class="nc" id="L400">				book.getLocation(),</span>
+<span class="nc" id="L401">				book.getCategory(),</span>
+<span class="nc" id="L402">				book.getUpdatedBy(), </span>
+<span class="nc" id="L403">				book.getUpdatedDt(), </span>
+<span class="nc" id="L404">				book.getBookCode());</span>
+	
+	}
+
+	public int doAdd(BookModel book) {
+<span class="nc" id="L409">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L410">		query.append(&quot; INSERT INTO tb_m_book( &quot;)</span>
+<span class="nc" id="L411">			 .append(&quot; book_cd,&quot;)</span>
+<span class="nc" id="L412">		 	 .append(&quot; title,&quot;)</span>
+<span class="nc" id="L413">			 .append(&quot; author,&quot;)</span>
+<span class="nc" id="L414">			 .append(&quot; subject_1,&quot;)</span>
+<span class="nc" id="L415">			 .append(&quot; subject_2,&quot;)</span>
+<span class="nc" id="L416">			 .append(&quot; book_cover,&quot;)</span>
+<span class="nc" id="L417">			 .append(&quot; book_summary,&quot;)</span>
+<span class="nc" id="L418">			 .append(&quot; publisher,&quot;)</span>
+<span class="nc" id="L419">			 .append(&quot; publication_year,&quot;)</span>
+<span class="nc" id="L420">			 .append(&quot; place_publication,&quot;)</span>
+<span class="nc" id="L421">			 .append(&quot; number_page,&quot;)</span>
+<span class="nc" id="L422">			 .append(&quot; stock,&quot;)</span>
+<span class="nc" id="L423">			 .append(&quot; location,&quot;)</span>
+<span class="nc" id="L424">			 .append(&quot; category,&quot;)</span>
+<span class="nc" id="L425">		     .append(&quot; created_by, &quot;)</span>
+<span class="nc" id="L426">		     .append(&quot; created_dt, &quot;)</span>
+<span class="nc" id="L427">		     .append(&quot; updated_by, &quot;)</span>
+<span class="nc" id="L428">		     .append(&quot; updated_dt   &quot;)</span>
+<span class="nc" id="L429">		     .append(&quot; ) VALUES ( &quot;)</span>
+<span class="nc" id="L430">		     .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L431">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L432">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L433">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L434">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L435">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L436">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L437">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L438">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L439">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L440">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L441">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L442">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L443">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L444">		     .append(&quot; ?, &quot;)// 6</span>
+<span class="nc" id="L445">		     .append(&quot; ?, &quot;)// 7</span>
+<span class="nc" id="L446">		     .append(&quot; ?, &quot;)// 8</span>
+<span class="nc" id="L447">		     .append(&quot; ? ) &quot;);// 9</span>
+	
+<span class="nc" id="L449">		int row = jdbcTemplate.update(query.toString(),</span>
+<span class="nc" id="L450">				book.getBookCode(),</span>
+<span class="nc" id="L451">				book.getTitle(),</span>
+<span class="nc" id="L452">				book.getAuthor(),</span>
+<span class="nc" id="L453">				book.getSubject1(),</span>
+<span class="nc" id="L454">				book.getSubject2(),</span>
+<span class="nc" id="L455">				book.getBookCover(),</span>
+<span class="nc" id="L456">				book.getBookSummary(),</span>
+<span class="nc" id="L457">				book.getPublisher(),</span>
+<span class="nc" id="L458">				book.getPublishYear(),</span>
+<span class="nc" id="L459">				book.getPlacePublication(),</span>
+<span class="nc" id="L460">				book.getNumberPage(),</span>
+<span class="nc" id="L461">				book.getStock(),</span>
+<span class="nc" id="L462">				book.getLocation(),</span>
+<span class="nc" id="L463">				book.getCategory(),</span>
+<span class="nc" id="L464">				book.getCreatedBy(),// 6</span>
+<span class="nc" id="L465">				book.getCreatedDt(), // 7</span>
+<span class="nc" id="L466">				book.getUpdatedBy(), // 8</span>
+<span class="nc" id="L467">				book.getUpdatedDt());// 9</span>
+<span class="nc" id="L468">		return row;</span>
+	}
+
+	public int doDeleteBook(BookModel book) {
+<span class="nc" id="L472">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L473">		sb.append(&quot; DELETE FROM tb_m_book &quot;);</span>
+<span class="nc" id="L474">		sb.append(&quot; WHERE book_cd = ?&quot;);</span>
+<span class="nc" id="L475">		return jdbcTemplate.update(sb.toString(), book.getBookCode());</span>
+	}
+
+	public BookMissingModel getBookMissingById(String bookCd, String date) {
+<span class="nc" id="L479">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L480">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L481">			 .append(&quot; DATE_FORMAT(bm.date,'%d/%m/%Y') AS date,  &quot;)</span>
+<span class="nc" id="L482">			 .append(&quot; bm.book_cd,  &quot;)</span>
+<span class="nc" id="L483">			 .append(&quot; bm.number_book,  &quot;)</span>
+<span class="nc" id="L484">			 .append(&quot; bm.reason,  &quot;)</span>
+<span class="nc" id="L485">			 .append(&quot; bm.created_by,  &quot;)</span>
+<span class="nc" id="L486">			 .append(&quot; bm.created_dt,  &quot;)</span>
+<span class="nc" id="L487">			 .append(&quot; bm.updated_by,  &quot;)</span>
+<span class="nc" id="L488">			 .append(&quot; bm.updated_dt  &quot;)</span>
+<span class="nc" id="L489">			 .append(&quot; FROM tb_r_missing_book bm  &quot;)</span>
+<span class="nc" id="L490">		     .append(&quot; WHERE bm.book_cd = ? &quot;)</span>
+<span class="nc" id="L491">		     .append(&quot; AND bm.date = STR_TO_DATE(?,'%d/%m/%Y') &quot;);</span>
+		
+<span class="nc" id="L493">		BookMissingModel book = new BookMissingModel();</span>
+
+<span class="nc" id="L495">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),bookCd, date);</span>
+<span class="nc bnc" id="L496" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L497">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L498">			System.out.println(row);</span>
+<span class="nc" id="L499">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L500">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L501">			book.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L502">			book.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L503">			book.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L504">			book.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L506">			book.setBookCd(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L507">			book.setDate(Common.toString(row.get(&quot;date&quot;)));</span>
+<span class="nc" id="L508">			book.setNumberOfBook((Integer)row.get(&quot;number_book&quot;));</span>
+<span class="nc" id="L509">			book.setReason(Common.toString(row.get(&quot;reason&quot;)));</span>
+			
+		}
+		
+<span class="nc" id="L513">		return book;</span>
+	}
+
+	public int doUpdateMissingBook(BookMissingModel book) {
+<span class="nc" id="L517">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L518">		sb.append(&quot; UPDATE tb_r_missing_book set&quot;);</span>
+<span class="nc" id="L519">		sb.append(&quot; number_book = ?,&quot;);</span>
+<span class="nc" id="L520">		sb.append(&quot; reason = ?,&quot;);</span>
+<span class="nc" id="L521">		sb.append(&quot; updated_by = ?,&quot;);</span>
+<span class="nc" id="L522">		sb.append(&quot; updated_dt = ?&quot;);</span>
+<span class="nc" id="L523">		sb.append(&quot; WHERE book_cd = ? &quot;);</span>
+<span class="nc" id="L524">		sb.append(&quot; AND date = STR_TO_DATE(?,'%d/%m/%Y') &quot;);</span>
+<span class="nc" id="L525">		return jdbcTemplate.update(sb.toString(), </span>
+<span class="nc" id="L526">				book.getNumberOfBook(),</span>
+<span class="nc" id="L527">				book.getReason(),</span>
+<span class="nc" id="L528">				book.getUpdatedBy(), </span>
+<span class="nc" id="L529">				book.getUpdatedDt(), </span>
+<span class="nc" id="L530">				book.getBookCd(),</span>
+<span class="nc" id="L531">				book.getDate());</span>
+	}
+
+	public int doAddMissingBook(BookMissingModel book) {
+<span class="nc" id="L535">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L536">		query.append(&quot; INSERT INTO tb_r_missing_book( &quot;)</span>
+<span class="nc" id="L537">			 .append(&quot; book_cd,&quot;)</span>
+<span class="nc" id="L538">		 	 .append(&quot; date,&quot;)</span>
+<span class="nc" id="L539">			 .append(&quot; number_book,&quot;)</span>
+<span class="nc" id="L540">			 .append(&quot; reason,&quot;)</span>
+<span class="nc" id="L541">			 .append(&quot; created_by, &quot;)</span>
+<span class="nc" id="L542">		     .append(&quot; created_dt, &quot;)</span>
+<span class="nc" id="L543">		     .append(&quot; updated_by, &quot;)</span>
+<span class="nc" id="L544">		     .append(&quot; updated_dt   &quot;)</span>
+<span class="nc" id="L545">		     .append(&quot; ) VALUES ( &quot;)</span>
+<span class="nc" id="L546">		     .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L547">			 .append(&quot; STR_TO_DATE(?,'%d/%m/%Y'),&quot;)</span>
+<span class="nc" id="L548">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L549">			 .append(&quot; ?,&quot;)</span>
+<span class="nc" id="L550">		     .append(&quot; ?, &quot;)// 6</span>
+<span class="nc" id="L551">		     .append(&quot; ?, &quot;)// 7</span>
+<span class="nc" id="L552">		     .append(&quot; ?, &quot;)// 8</span>
+<span class="nc" id="L553">		     .append(&quot; ? ) &quot;);// 9</span>
+	
+<span class="nc" id="L555">		int row = jdbcTemplate.update(query.toString(),</span>
+<span class="nc" id="L556">				book.getBookCd(),</span>
+<span class="nc" id="L557">				book.getDate(),</span>
+<span class="nc" id="L558">				book.getNumberOfBook(),</span>
+<span class="nc" id="L559">				book.getReason(),</span>
+<span class="nc" id="L560">				book.getCreatedBy(),// 6</span>
+<span class="nc" id="L561">				book.getCreatedDt(), // 7</span>
+<span class="nc" id="L562">				book.getUpdatedBy(), // 8</span>
+<span class="nc" id="L563">				book.getUpdatedDt());// 9</span>
+<span class="nc" id="L564">		return row;</span>
+	}
+
+	public List&lt;BookMissingModel&gt; doSearchMissingBook(BookMissingModel model) {
+<span class="nc" id="L568">		StringBuilder query = new StringBuilder();</span>
+<span class="nc" id="L569">		query.append(&quot; SELECT  &quot;)</span>
+<span class="nc" id="L570">			 .append(&quot; DATE_FORMAT(bm.date,'%d/%m/%Y') AS date,  &quot;)</span>
+<span class="nc" id="L571">			 .append(&quot; bm.book_cd,  &quot;)</span>
+<span class="nc" id="L572">			 .append(&quot; bm.number_book,  &quot;)</span>
+<span class="nc" id="L573">			 .append(&quot; bm.reason,  &quot;)</span>
+<span class="nc" id="L574">			 .append(&quot; bm.created_by,  &quot;)</span>
+<span class="nc" id="L575">			 .append(&quot; bm.created_dt,  &quot;)</span>
+<span class="nc" id="L576">			 .append(&quot; bm.updated_by,  &quot;)</span>
+<span class="nc" id="L577">			 .append(&quot; bm.updated_dt  &quot;)</span>
+<span class="nc" id="L578">			 .append(&quot; FROM tb_r_missing_book bm  &quot;)</span>
+<span class="nc" id="L579">		     .append(&quot; WHERE bm.book_cd = ? &quot;);</span>
+		
+<span class="nc" id="L581">		List&lt;BookMissingModel&gt; books = new ArrayList&lt;BookMissingModel&gt;();</span>
+
+<span class="nc" id="L583">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(query.toString(),model.getBookCd());</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L585">			BookMissingModel book = new BookMissingModel();</span>
+<span class="nc" id="L586">			System.out.println(&quot;row: &quot;);</span>
+<span class="nc" id="L587">			System.out.println(row);</span>
+<span class="nc" id="L588">			Date createdDate = (Date) row.get(&quot;created_dt&quot;);</span>
+<span class="nc" id="L589">			Date updatedDate = (Date) row.get(&quot;updated_dt&quot;);</span>
+<span class="nc" id="L590">			book.setCreatedBy(Common.toString(row.get(&quot;created_by&quot;)));</span>
+<span class="nc" id="L591">			book.setCreatedDt(Constanta.sdf.format(createdDate));</span>
+<span class="nc" id="L592">			book.setUpdatedBy(Common.toString(row.get(&quot;updated_by&quot;)));</span>
+<span class="nc" id="L593">			book.setUpdatedDt(Constanta.sdf.format(updatedDate));</span>
+			
+<span class="nc" id="L595">			book.setBookCd(Common.toString(row.get(&quot;book_cd&quot;)));</span>
+<span class="nc" id="L596">			book.setDate(Common.toString(row.get(&quot;date&quot;)));</span>
+<span class="nc" id="L597">			book.setNumberOfBook((Integer)row.get(&quot;number_book&quot;));</span>
+<span class="nc" id="L598">			book.setReason(Common.toString(row.get(&quot;reason&quot;)));</span>
+			
+<span class="nc" id="L600">			books.add(book);</span>
+		}
+		
+<span class="nc" id="L603">		return books;</span>
+	}
+
+	public int doDeleteMissingBook(BookMissingModel book) {
+<span class="nc" id="L607">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L608">		sb.append(&quot; DELETE FROM tb_r_missing_book &quot;);</span>
+<span class="nc" id="L609">		sb.append(&quot; WHERE book_cd = ? &quot;);</span>
+<span class="nc" id="L610">		sb.append(&quot; AND date = STR_TO_DATE(?,'%d/%m/%Y') &quot;);</span>
+<span class="nc" id="L611">		return jdbcTemplate.update(sb.toString(), book.getBookCd(), book.getDate());</span>
+	}
+
+	public List&lt;ComboModel&gt; getComboBook() {
+<span class="nc" id="L615">		StringBuilder sb = new StringBuilder();</span>
+<span class="nc" id="L616">		sb.append(&quot;SELECT book_cd as value, book_cd AS label FROM tb_m_book &quot;);</span>
+<span class="nc" id="L617">		List&lt;ComboModel&gt; dtos = new ArrayList&lt;ComboModel&gt;();</span>
+<span class="nc" id="L618">		List&lt;Map&lt;String, Object&gt;&gt; rows = jdbcTemplate.queryForList(sb.toString());</span>
+<span class="nc bnc" id="L619" title="All 2 branches missed.">		for (Map&lt;String, Object&gt; row : rows) {</span>
+<span class="nc" id="L620">			ComboModel model = new ComboModel();</span>
+<span class="nc" id="L621">			model.setValue(Common.toString(row.get(&quot;value&quot;)));</span>
+<span class="nc" id="L622">			model.setLabel(Common.toString(row.get(&quot;label&quot;)));</span>
+<span class="nc" id="L623">			dtos.add(model);</span>
+		}
+		
+<span class="nc" id="L626">		return dtos;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.3.201901230119</span></div></body></html>
