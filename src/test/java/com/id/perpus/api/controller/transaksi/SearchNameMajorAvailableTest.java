@@ -22,7 +22,7 @@ import org.openqa.selenium.Keys;
 import java.util.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-public class SearchMemberAvailableTest {
+public class SearchNameMajorAvailableTest {
   private WebDriver driver;
   private Map<String, Object> vars;
   JavascriptExecutor js;
@@ -37,19 +37,22 @@ public class SearchMemberAvailableTest {
     driver.quit();
   }
   @Test
-  public void searchMemberAvailable() {
-    driver.get("http://localhost:8080/login");
+  public void searchNameMajorAvailable() {
+    driver.get("http://localhost:8080//login");
     driver.manage().window().setSize(new Dimension(1382, 744));
     driver.findElement(By.id("username")).click();
     driver.findElement(By.id("username")).sendKeys("susi@email.com");
     driver.findElement(By.id("password")).click();
     driver.findElement(By.id("password")).sendKeys("123456");
     driver.findElement(By.id("btnLogin")).click();
-    driver.findElement(By.cssSelector(".pull-right-container")).click();
+    driver.findElement(By.cssSelector("#BFB20000 span:nth-child(2)")).click();
     driver.findElement(By.cssSelector("#BFB20002 span")).click();
     driver.findElement(By.id("memberName")).click();
     driver.findElement(By.id("memberName")).sendKeys("Budi");
+    driver.findElement(By.id("majors")).click();
+    driver.findElement(By.id("majors")).sendKeys("Teknik Kimia");
     driver.findElement(By.id("btnSearch")).click();
     assertThat(driver.findElement(By.cssSelector("td:nth-child(4)")).getText(), is("Budi"));
+    assertThat(driver.findElement(By.cssSelector("tr:nth-child(1) > td:nth-child(5) > p")).getText(), is("Teknik Kimia DIII Teknik Kimia"));
   }
 }
