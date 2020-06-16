@@ -27,11 +27,11 @@ public class LoanDateTest {
     driver.get("http://localhost:8080/login");
     driver.findElement(By.id("username")).click();
     driver.findElement(By.id("username")).clear();
-    driver.findElement(By.id("username")).sendKeys("official@a.com");
+    driver.findElement(By.id("username")).sendKeys("susi@email.com");
     driver.findElement(By.xpath("//form[@id='loginForm']/div[2]/div")).click();
     driver.findElement(By.id("password")).click();
     driver.findElement(By.id("password")).clear();
-    driver.findElement(By.id("password")).sendKeys("abc123!!");
+    driver.findElement(By.id("password")).sendKeys("123456");
     driver.findElement(By.id("btnLogin")).click();
     driver.findElement(By.linkText("Transaction")).click();
     driver.findElement(By.linkText("Return Transaction")).click();
