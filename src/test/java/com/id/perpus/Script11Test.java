@@ -9,11 +9,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
-<<<<<<< HEAD:src/test/java/com/id/perpus/TC11Test.java
-public class TC11Test {
-=======
 public class Script11Test {
->>>>>>> origin/Hamzah:src/test/java/com/id/perpus/Script11Test.java
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
