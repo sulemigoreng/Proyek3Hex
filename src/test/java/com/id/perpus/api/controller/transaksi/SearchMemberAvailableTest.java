@@ -22,7 +22,7 @@ import org.openqa.selenium.Keys;
 import java.util.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-public class LoginOfficialTest {
+public class SearchMemberAvailableTest {
   private WebDriver driver;
   private Map<String, Object> vars;
   JavascriptExecutor js;
@@ -37,7 +37,7 @@ public class LoginOfficialTest {
     driver.quit();
   }
   @Test
-  public void loginOfficial() {
+  public void searchMemberAvailable() {
     driver.get("http://localhost:8080/login");
     driver.manage().window().setSize(new Dimension(1382, 744));
     driver.findElement(By.id("username")).click();
@@ -45,9 +45,11 @@ public class LoginOfficialTest {
     driver.findElement(By.id("password")).click();
     driver.findElement(By.id("password")).sendKeys("123456");
     driver.findElement(By.id("btnLogin")).click();
-    {
-      List<WebElement> elements = driver.findElements(By.cssSelector("#BFB20002 span"));
-      assert(elements.size() > 0);
-    }
+    driver.findElement(By.cssSelector(".pull-right-container")).click();
+    driver.findElement(By.cssSelector("#BFB20002 span")).click();
+    driver.findElement(By.id("memberName")).click();
+    driver.findElement(By.id("memberName")).sendKeys("Budi");
+    driver.findElement(By.id("btnSearch")).click();
+    assertThat(driver.findElement(By.cssSelector("td:nth-child(4)")).getText(), is("Budi"));
   }
 }
