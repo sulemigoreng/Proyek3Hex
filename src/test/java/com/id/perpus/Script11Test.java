@@ -24,7 +24,16 @@ public class Script11Test {
 
   @Test
   public void testScript11() throws Exception {
-    driver.get("http://localhost:8080/kembali");
+    driver.get("http://localhost:8080/login");
+    driver.findElement(By.id("username")).click();
+    driver.findElement(By.id("username")).clear();
+    driver.findElement(By.id("username")).sendKeys("susi@email.com");
+    driver.findElement(By.id("password")).click();
+    driver.findElement(By.id("password")).clear();
+    driver.findElement(By.id("password")).sendKeys("123456");
+    driver.findElement(By.id("btnLogin")).click();
+    driver.findElement(By.linkText("Transaction")).click();
+    driver.findElement(By.xpath("//li[@id='BFB20002']/a/span")).click();
     String Expected = driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[2]")).getText();
     driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[9]/a/i")).click();
     driver.findElement(By.id("btnSubmit")).click();
