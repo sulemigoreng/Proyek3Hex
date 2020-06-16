@@ -9,7 +9,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class 10 {
+public class Script12Test {
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -23,13 +23,16 @@ public class 10 {
   }
 
   @Test
-  public void test10() throws Exception {
-    driver.get("http://localhost:8080/PerpustakaanWebApp/kembali");
-    String Expected = driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[2]")).getText();
-    driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[9]/a/i")).click();
-    driver.findElement(By.id("btnCancel")).click();
-    String Result = driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[2]")).getText();
-	assertEquals(Expected, Result);
+  public void testScript12() throws Exception {
+    driver.get("http://localhost:8080/kembali");
+    driver.findElement(By.id("sizeRow")).click();
+    new Select(driver.findElement(By.id("sizeRow"))).selectByVisibleText("25");
+    driver.findElement(By.id("sizeRow")).click();
+    assertTrue(isElementPresent(By.xpath("//tbody[@id='tb-body-book']/tr[11]/td")));
+    driver.findElement(By.id("sizeRow")).click();
+    new Select(driver.findElement(By.id("sizeRow"))).selectByVisibleText("10");
+    driver.findElement(By.id("sizeRow")).click();
+    assertFalse(isElementPresent(By.xpath("//tbody[@id='tb-body-book']/tr[11]/td")));
   }
 
   @After
