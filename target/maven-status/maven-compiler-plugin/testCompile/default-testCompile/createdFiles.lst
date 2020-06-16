@@ -1,0 +1,5 @@
+com\id\perpus\api\controller\auth\AuthControllerUnitTest.class
+com\example\tests\CheckNameInRowAndTransactionPageTest.class
+com\id\perpus\book\ComboBkPinjamTest.class
+com\example\tests\GetDataByNameMajorLoanDateTest.class
+com\example\tests\GetDataByMajorAndLoanDateTest.class
