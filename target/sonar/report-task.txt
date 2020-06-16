@@ -1,6 +1,6 @@
 projectKey=com.id.perpus:PerpustakaanWebApp
 serverUrl=http://localhost:9000
-serverVersion=6.7.6.38781
-dashboardUrl=http://localhost:9000/dashboard/index/com.id.perpus:PerpustakaanWebApp
-ceTaskId=AXGOR6PBuUNceWSdA1eM
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AXGOR6PBuUNceWSdA1eM
+serverVersion=8.2.0.32929
+dashboardUrl=http://localhost:9000/dashboard?id=com.id.perpus%3APerpustakaanWebApp
+ceTaskId=AXK9RvghBgUE_mcOA6iD
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXK9RvghBgUE_mcOA6iD
