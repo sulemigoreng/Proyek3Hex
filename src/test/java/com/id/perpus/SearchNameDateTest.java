@@ -57,6 +57,16 @@ public class SearchNameDateTest {
     driver.findElement(By.id("loanDateFrom")).sendKeys("21/03/2020");
     driver.findElement(By.id("btnSearch")).click();
     driver.findElement(By.xpath("//div[@id='toast-container']/div/button")).click();
+    try {
+      assertEquals("Budi", driver.findElement(By.cssSelector("td:nth-child(4)")).getText());
+    } catch (Error e) {
+      verificationErrors.append(e.toString());
+    }
+    try {
+      assertEquals("21/03/2020", driver.findElement(By.cssSelector("tr:nth-child(1) > td:nth-child(7) > p")).getText());
+    } catch (Error e) {
+      verificationErrors.append(e.toString());
+    }
   }
 
   @After

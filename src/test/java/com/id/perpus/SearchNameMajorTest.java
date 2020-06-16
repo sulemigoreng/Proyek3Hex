@@ -51,6 +51,16 @@ public class SearchNameMajorTest {
         driver.findElement(By.id("majors")).clear();
         driver.findElement(By.id("majors")).sendKeys("Teknik Kimia");
         driver.findElement(By.id("btnSearch")).click();
+        try {
+            assertEquals("Budi", driver.findElement(By.cssSelector("td:nth-child(4)")).getText());
+        } catch (Error e) {
+            verificationErrors.append(e.toString());
+        }
+        try {
+            assertEquals("Teknik Kimia DIII Teknik Kimia", driver.findElement(By.cssSelector("tr:nth-child(1) > td:nth-child(5) > p")).getText());
+        } catch (Error e) {
+            verificationErrors.append(e.toString());
+        }
     }
 
     @After
