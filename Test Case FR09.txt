@@ -1,0 +1,12 @@
+1. Login dengan akun yang bukan OFFICIAL (Expected: Tidak ada halaman transaksi pengembalian buku)
+2. Login dengan akun yang OFFICIAL (Expected: Tersedia halaman transaksi pengembalian buku)
+3. Search nama yang tidak ada dalam daftar orang yang belum mengembalikan buku (Expected: Pesan "Data Not Found")
+4. Search nama yang tersedia pada daftar orang yang belum mengembalikan buku (Expected: Menampilkan data berdasarkan nama tersebut)
+5. Search major yang tidak ada dalam daftar major yang belum mengembalikan buku (Expected: Pesan "Data Not Found")
+6. Search major yang ada dalam daftar major yang belum mengembalikan buku (Expected: Menampilkan data berdasarkan masukkan major tersebut)
+7. Search nama yang tersedia pada daftar orang yang belum mengembalikan buku namun major tidak tersedia (Expected: "Data Not Found")
+8. Search nama tidak tersedia namun major tersedia pada daftar major yang belum mengembalikan buku (Expected: "Data Not Found")
+9. Mengisi Loan Date From lebih besar dari Loan Date To (Expected: ?)
+10. User memilih untuk tidak melakukan transaksi pengembalian (Expected: Tutup pesan konfirmasi dan screen kembali pada Screen Transaksi Pengembalian dan nama yang terkait masih ada pada daftar)
+11. User memilih untuk melakukan transaksi pengembalian (Expected: nama yang terkait tidak lagi terdaftar pada daftar orang yang belum mengembalikan buku, dan message "book returned transaction's data successfully saved" atau semacamnya)
+12. 
