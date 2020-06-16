@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8e3a8bcb-a57c-47b3-acbc-3a9b01be97cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/LoginBukanOfficialTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/LoginOfficialTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/SearchPersonNotInDBTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/user/SearchUserTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-    </list>
+    <list default="true" id="312cbdfd-af30-4413-837e-f122e831bcea" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
