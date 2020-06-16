@@ -1,4 +1,4 @@
-package com.example.tests;
+package com.id.perpus;
 
 import java.util.regex.Pattern;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +9,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class 10 {
+public class 11 {
   private WebDriver driver;
   private String baseUrl;
   private boolean acceptNextAlert = true;
@@ -23,11 +23,11 @@ public class 10 {
   }
 
   @Test
-  public void test10() throws Exception {
+  public void test11() throws Exception {
     driver.get("http://localhost:8080/PerpustakaanWebApp/kembali");
     String Expected = driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[2]")).getText();
     driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[9]/a/i")).click();
-    driver.findElement(By.id("btnCancel")).click();
+    driver.findElement(By.id("btnSubmit")).click();
     String Result = driver.findElement(By.xpath("//tbody[@id='tb-body-book']/tr/td[2]")).getText();
 	assertEquals(Expected, Result);
   }
