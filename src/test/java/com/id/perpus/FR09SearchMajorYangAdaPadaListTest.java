@@ -44,11 +44,11 @@ public class FR09SearchMajorYangAdaPadaListTest {
 
   @After
   public void tearDown() throws Exception {
-//    driver.quit();
-//    String verificationErrorString = verificationErrors.toString();
-//    if (!"".equals(verificationErrorString)) {
-//      fail(verificationErrorString);
-//    }
+    driver.quit();
+    String verificationErrorString = verificationErrors.toString();
+    if (!"".equals(verificationErrorString)) {
+      fail(verificationErrorString);
+    }
   }
 
   private boolean isElementPresent(By by) {
