@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="8e3a8bcb-a57c-47b3-acbc-3a9b01be97cd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/LoginBukanOfficialTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/LoginOfficialTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/transaksi/SearchPersonNotInDBTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/id/perpus/api/controller/user/SearchUserTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1cUzh66Z6U0iPwgJNPtB6dYYY1N" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/SpringBoot/springboot-redis-exp" />
+  </component>
+  <component name="RunManager">
+    <configuration name="PerpustakaanWebAppApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.id.perpus.PerpustakaanWebAppApplication" />
+      <module name="PerpustakaanWebApp" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.id.perpus.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.PerpustakaanWebAppApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8e3a8bcb-a57c-47b3-acbc-3a9b01be97cd" name="Default Changelist" comment="" />
+      <created>1590598075323</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590598075323</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="380" y="0" width="619" height="728" key="#PerpustakaanWebAppApplication" timestamp="1592298472186">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="380" y="0" width="619" height="728" key="#PerpustakaanWebAppApplication/0.0.1366.728@0.0.1366.728" timestamp="1592298472186" />
+    <state x="463" y="122" key="FileChooserDialogImpl" timestamp="1590894844066">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="463" y="122" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1590894844066" />
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom" timestamp="1590897359718">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1590897359718" />
+    <state width="1323" height="179" key="GridCell.Tab.0.center" timestamp="1590897359718">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1590897359718" />
+    <state width="1323" height="179" key="GridCell.Tab.0.left" timestamp="1590897359717">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1590897359717" />
+    <state width="1323" height="179" key="GridCell.Tab.0.right" timestamp="1590897359718">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1323" height="179" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1590897359718" />
+    <state x="390" y="191" key="com.intellij.ide.util.TipDialog" timestamp="1590894348695">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="390" y="191" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1590894348695" />
+  </component>
+</project>
